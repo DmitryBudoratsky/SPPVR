@@ -1,0 +1,6 @@
+{
+  "name": "Base backend",
+  "version": "0.1.0",
+  "description": "Документация серверного SDK",
+  "url" : "http://82.146.53.185:8104/api"
+}
