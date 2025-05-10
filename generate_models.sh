@@ -2,7 +2,6 @@
 
 # User
 php yii gii/model --tableName=user									--modelClass=BaseUser					--baseClass="common\models\db\base\BaseModel" --ns="common\models\db" --overwrite=1 --interactive=0
-php yii gii/model --tableName=passwordResetRequest					--modelClass=BasePasswordResetRequest	--baseClass="common\models\db\base\BaseModel" --ns="common\models\db" --overwrite=1 --interactive=0
 php yii gii/model --tableName=accessToken							--modelClass=BaseAccessToken			--baseClass="common\models\db\base\BaseModel" --ns="common\models\db" --overwrite=1 --interactive=0
 
 # Chat
