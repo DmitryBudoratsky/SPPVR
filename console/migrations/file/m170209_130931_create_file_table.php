@@ -23,15 +23,6 @@ class m170209_130931_create_file_table extends Migration
         	'createdAt' => $this->bigInteger(),
         	'updatedAt' => $this->bigInteger()
         ]);
-        
-        $this->addForeignKey(
-        	'fk-user-file-1',
-        	'user',
-        	'avatarFileId',
-        	'file',
-        	'fileId',
-        	'SET NULL'
-        );
     }
 
     /**
@@ -39,10 +30,6 @@ class m170209_130931_create_file_table extends Migration
      */
     public function safeDown()
     {
-    	$this->dropForeignKey(
-    		'fk-user-file-1',
-    		'user'
-    	);
         $this->dropTable('file');
     }
 }

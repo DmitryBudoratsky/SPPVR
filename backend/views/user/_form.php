@@ -21,10 +21,6 @@ use kartik\select2\Select2;
 
     <?= $form->field($model, 'lastname')->textInput(['maxlength' => true]) ?>
 
-    <?= $form->field($fileModel, 'fileId')->fileInput(['accept' => 'image/*'])->label('Аватар') ?>
-
-    <?= $form->field($model, 'login')->textInput(['maxlength' => true]) ?>
-
 	<?= $form->field($model, 'status')->widget(Select2::classname(), [
 				'data' => User::statusLabels(),
 				'options' => [
@@ -52,19 +48,6 @@ use kartik\select2\Select2;
     <?= $form->field($model, 'password')->passwordInput(['maxlength' => true]) ?>
 	
     <?= $form->field($model, 'email')->textInput(['maxlength' => true]) ?>
-    
-	<?= $form->field($model, 'isEmailConfirmed')
-		->dropDownList($model->isEmailConfirmedLabels()) ?>
-
-    <?= $form->field($model, 'phone')->textInput(['maxlength' => true]) ?>
-
-    <?= $form->field($model, 'vkUserId')->textInput(['maxlength' => true]) ?>
-
-    <?= $form->field($model, 'facebookUserId')->textInput(['maxlength' => true]) ?>
-
-    <?= $form->field($model, 'twitterUserId')->textInput(['maxlength' => true]) ?>
-
-    <?= $form->field($model, 'notificationsEnabled')->checkbox() ?>
 
 
     <div class="form-group">

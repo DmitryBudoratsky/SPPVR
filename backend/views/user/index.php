@@ -32,9 +32,6 @@ if (empty($referrer) || !strpos($referrer, '/user/index')) {
         <?= Html::a('Добавить нового пользователя', ['create'], ['class' => 'btn btn-success']) ?>
     </p>
 
-    <?= FancyboxHelper::renderFancybox(); ?>
-    <?php Pjax::begin(['id' => 'my_pjax']); ?>
-
     <?= GridView::widget([
         'dataProvider' => $dataProvider,
         'filterModel' => $searchModel,
@@ -50,20 +47,9 @@ if (empty($referrer) || !strpos($referrer, '/user/index')) {
             ],
 
             [
-                'label' => 'Аватар',
-                'format' => 'raw',
-                'value' => function (/** @var User $model */ $model, $key) {
-                    if (empty($model->avatarFile)) {
-                        return null;
-                    }
-                    return Html::a(Html::img($model->avatarFile->getPreviewImageUrl(), ['class' => 'previewImage']), $model->avatarFile->getAbsoluteFileUrl(), ['data-fancybox' => true]);
-
-                },
-            ],
-
-            [
                 'attribute' => 'name',
                 'format' => 'raw',
+                'contentOptions' => ['style' => 'width: 10%;'],
                 'value' => function (/** @var User $model */ $model) {
                     return (!empty($model->name)) ? Html::a($model->name, ['user/view', 'id' => $model->userId]) : '';
                 },
@@ -71,6 +57,7 @@ if (empty($referrer) || !strpos($referrer, '/user/index')) {
 
             [
                 'attribute' => 'lastname',
+                'contentOptions' => ['style' => 'width: 10%;'],
                 'format' => 'raw',
                 'value' => function (/** @var User $model */ $model) {
                     return (!empty($model->lastname)) ? Html::a($model->lastname, ['user/view', 'id' => $model->userId]) : '';
@@ -78,17 +65,15 @@ if (empty($referrer) || !strpos($referrer, '/user/index')) {
             ],
 
             [
-                'attribute' => 'login',
-                'format' => 'raw',
-                'value' => function (/** @var User $model */ $model) {
-                    return (!empty($model->login)) ? Html::a($model->login, ['user/view', 'id' => $model->userId]) : '';
-                },
-            ],
-
-            [
                 'attribute' => 'status',
+                'format' => 'raw',
                 'value' => function ($model) {
-                    return TypeHelper::getTypeLabelByModel($model, 'status');
+                    return Html::tag('span',
+                        User::statusLabels()[$model->status],
+                        [
+                            'class' => 'badge badge-' . ($model->isUserActive() ? 'success' : 'danger')
+                        ]
+                    );
                 },
                 'filter' => Select2::widget([
                     'model' => $searchModel,
@@ -114,7 +99,6 @@ if (empty($referrer) || !strpos($referrer, '/user/index')) {
                     'data' => User::roleLabels(),
                     'options' => [
                         'placeholder' => 'Роль',
-//						'multiple' => true
                     ],
                     'pluginOptions' => [
                         'allowClear' => true,
@@ -125,33 +109,24 @@ if (empty($referrer) || !strpos($referrer, '/user/index')) {
             'email:email',
 
             [
-                'attribute' => 'isEmailConfirmed',
-                'value' => function ($model) {
-                    return TypeHelper::getTypeLabelByModel($model, 'isEmailConfirmed');
-                },
-                'filter' => User::isEmailConfirmedLabels()
-            ],
-
-            [
-                'attribute' => 'phone',
-                'contentOptions' => ['style' => 'width: 9%;'],
-            ],
-
-            [
-                'label' => 'Статус профиля',
-                'format' => 'raw',
-                'value' => function (User $model) {
-                    return Html::tag('span',
-                        $model->isDeleted ? "Удален" : "Активен",
-                        [
-                            'class' => 'badge badge-' . ($model->isDeleted ? 'danger' : 'success')
-                        ]);
-                },
-            ],
-
-            [
                 'attribute' => 'createdAt',
-                'contentOptions' => ['style' => 'width: 8%;'],
+                'format' => 'datetime',
+                'filter' => DateRangePicker::widget([
+                    'model' => $searchModel,
+                    'attribute' => 'createdAtRange',
+                    'convertFormat' => true,
+                    'pluginOptions' => [
+                        'opens' => 'right',
+                        'locale' => [
+                            'cancelLabel' => 'Закрыть',
+                            'format' => 'Y-m-d ',
+                        ]
+                    ],
+                ]),
+            ],
+
+            [
+                'attribute' => 'updatedAt',
                 'format' => 'datetime',
                 'filter' => DateRangePicker::widget([
                     'model' => $searchModel,
@@ -169,19 +144,8 @@ if (empty($referrer) || !strpos($referrer, '/user/index')) {
 
             [
                 'class' => 'yii\grid\ActionColumn',
-                'buttons' => [
-                    'delete' => function ($url, $model) {
-                        return Html::a('<i class="fas fa-trash-alt"></i>', false, [
-                            'class' => 'pjax-delete-link',
-                            'delete-url' => $url,
-                            'pjax-container' => 'my_pjax',
-                            'title' => Yii::t('yii', 'Delete')
-                        ]);
-                    },
-                ],
             ],
         ],
     ]); ?>
-    <?php Pjax::end(); ?>
 
 </div>

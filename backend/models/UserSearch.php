@@ -22,24 +22,6 @@ class UserSearch extends User
 		$this->status = null;
 		$this->role = null;
 	}
-	
-	public function scenarios()
-	{
-		return [
-			self::SCENARIO_DEFAULT => [
-				'userId', 'status', 'role', 'isEmailConfirmed',
-                'updatedAt', 'name', 'lastname', 'passwordHash',
-				'login', 'email', 'phone', 'vkUserId', 'facebookUserId',
-                'twitterUserId', 'instagramUserId', 'authKey', 'createdAtRange'
-			],
-			self::SCENARIO_BLOCKED_USERS => [
-				'userId', 'status', 'role', 'isEmailConfirmed',
-                'updatedAt', 'name', 'lastname', 'passwordHash',
-				'login', 'email', 'phone', 'vkUserId', 'facebookUserId',
-				'twitterUserId', 'instagramUserId', 'authKey', 'createdAtRange'
-			],
-		];
-	}
 		
     /**
      * @inheritdoc
@@ -47,9 +29,9 @@ class UserSearch extends User
     public function rules()
     {
         return [
-            [['userId', 'isEmailConfirmed',], 'integer'],
+            [['userId'], 'integer'],
 			[['status', 'role'], 'default'],
-            [['name', 'lastname', 'passwordHash', 'login', 'email', 'phone', 'vkUserId', 'facebookUserId', 'twitterUserId', 'instagramUserId', 'authKey', 'createdAt', 'updatedAt'], 'safe'],
+            [['name', 'lastname', 'passwordHash', 'login', 'email', 'createdAt', 'updatedAt'], 'safe'],
             ['createdAtRange', 'string'],
         ];
     }
@@ -93,21 +75,13 @@ class UserSearch extends User
         $query->andFilterWhere([
             'userId' => $this->userId,
             'status' => $this->status,
-            'role' => $this->role,
-        	'isEmailConfirmed' => $this->isEmailConfirmed,
+            'role' => $this->role
         ]);
 
         $query->andFilterWhere(['like', 'name', $this->name])
             ->andFilterWhere(['like', 'lastname', $this->lastname])
             ->andFilterWhere(['like', 'passwordHash', $this->passwordHash])
-            ->andFilterWhere(['like', 'login', $this->login])
-            ->andFilterWhere(['like', 'email', $this->email])
-            ->andFilterWhere(['like', 'phone', $this->phone])
-            ->andFilterWhere(['like', 'vkUserId', $this->vkUserId])
-            ->andFilterWhere(['like', 'facebookUserId', $this->facebookUserId])
-            ->andFilterWhere(['like', 'twitterUserId', $this->twitterUserId])
-            ->andFilterWhere(['like', 'instagramUserId', $this->instagramUserId])
-            ->andFilterWhere(['like', 'authKey', $this->authKey]);
+            ->andFilterWhere(['like', 'email', $this->email]);
 
         return $dataProvider;
     }

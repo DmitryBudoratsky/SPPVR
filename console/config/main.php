@@ -16,49 +16,10 @@ return [
     		'class' => 'yii\console\controllers\MigrateController',
     		'migrationTable' => 'migration',
     		'migrationNamespaces' => [
-                //DONT touch
                 'console\migrations\user',
-                'console\migrations\page',
                 'console\migrations\file',
-                'console\migrations\push',
-                'console\migrations\settings',
-
-                //touch
-    			'console\migrations\category',
     			'console\migrations\chat',
-    			'console\migrations\comment',
-    			'console\migrations\complaint',
-    			'console\migrations\post',
-    			'console\migrations\product',
-
-                'console\migrations\country',
-    			'console\migrations\aboutUs',
-    			'console\migrations\userSubscription',	
-    			'console\migrations\userRelation',	
-    			'console\migrations\account',	
-    			'console\migrations\request',
-
-                'console\migrations\service',
-                'console\migrations\organization',
-
-                'console\migrations\vehicle',
-                'console\migrations\promoCode',
-                'console\migrations\shop',
-                'console\migrations\notification',
-                'console\migrations\specialistProfile',
-                'console\migrations\review',
-
-                'console\migrations\lmsCourse',
-                'console\migrations\quiz',
-
-                'console\migrations\bankCard',
-                'console\migrations\paymentInfo',
-
-                'console\migrations\favoriteItem',
-
-                'console\migrations\uniqueIndexes',
-
-                'console\migrations\geolocation',
+                'console\migrations\case',
             ],
     	],
     ],

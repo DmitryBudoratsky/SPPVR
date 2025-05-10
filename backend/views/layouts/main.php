@@ -114,69 +114,7 @@ $isFullsize = isset($isFullsize) ? $isFullsize : false;
 
         $menuItems[] = ['label' => 'Dev', 'items' => $devItems];
 
-        // --- пользователи ---
-        $userItems = [
-            ['label' => 'Все', 'url' => ['user/index']],
-            ['label' => 'Заблокированные', 'url' => ['user/blocked-users']]
-        ];
-        // --- номера заглушки ---
-        if (in_array('fakePhone', $existTablesArr)) {
-            $userItems [] = ['label' => 'Номера заглушки', 'url' => ['fake-phone/index']];
-        }
-        $menuItems[] = ['label' => 'Пользователи', 'items' => $userItems];
-
-		// --- отзывы ---
-        if (in_array('review', $existTablesArr) && in_array('complaint', $existTablesArr)) {
-            $menuItems[] = ['label' => 'Отзывы и жалобы', 'items' => [
-                ['label' => 'Отзывы', 'url' => ['review/index']],
-                ['label' => 'Жалобы', 'url' => ['complaint/index']],
-            ]];
-        }
-
-		// --- продукты ---
-		if (in_array('product', $existTablesArr)) {
-			$productItems = [];
-			$productItems[] = ['label' => 'Продукты', 'url' => ['product/index']];
-            if (in_array('shopOrder', $existTablesArr)) {
-                $productItems[] = ['label' => 'Заказы', 'url' => ['shop-order/index']];
-            }
-
-            $menuItems[] = ['label' => 'Продукты', 'items' => $productItems];
-		}
-
-		// --- категории ---
-		if (in_array('category', $existTablesArr)) {
-			$menuItems[] = ['label' => 'Категории', 'url' => ['category/index']];
-		}
-
-		// --- посты ---
-		if (in_array('post', $existTablesArr)) {
-			foreach (PostMultitypeModelViewHelper::getModelsLabels() as $key => $value) {
-				$postItems[] = ['label' => $value, 'url' => ['post/index', 'type' => $key]];
-			}
-			if (in_array('stopWord', $existTablesArr)) {
-				$postItems[] = 	['label' => 'Стоп-слова', 'url' => ['stop-word/index']];
-			}
-
-			$menuItems[] = ['label' => 'Посты', 'items' => $postItems];
-		}
-
-		// --- комментарии и жалобы ---
-		if (in_array('comment', $existTablesArr) || in_array('complaint', $existTablesArr)) {
-			$commentItems = [];
-			if (in_array('comment', $existTablesArr)) {
-				foreach (CommentMultitypeModelViewHelper::getModelsLabels() as $key => $value) {
-					$commentItems[] = ['label' => $value, 'url' => ['comment/index', 'type' => $key]];
-				}
-			}
-			if (in_array('complaint', $existTablesArr)) {
-				if (\Yii::$app->db->getTableSchema('{{%Complaint}}', true) !== null) {
-					$commentItems[] = ['label' => 'Жалобы', 'url' => ['complaint/index', 'type' => 'comment']];
-				}
-			}
-
-			$menuItems[] =  ['label' => 'Ком-ии', 'items' => $commentItems];
-		}
+        $menuItems[] = ['label' => 'Пользователи', 'url' => ['user/index']];
 
         // --- чаты ---
         if (in_array('chat', $existTablesArr)) {

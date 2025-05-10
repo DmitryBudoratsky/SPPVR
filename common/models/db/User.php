@@ -35,69 +35,49 @@ use yii\db\ActiveQuery;
  */
 class User extends BaseUser implements IdentityInterface
 {
-	const STATUS_DELETED = 0;
-	const STATUS_BLOCKED = 1;
-	const STATUS_ACTIVE = 10;
+    const STATUS_ACTIVE = 0;
+    const STATUS_BLOCKED = 1;
+    const STATUS_DELETED = 2;
 
-	const ROLE_DEFAULT_USER = 1;
-	const ROLE_ADMIN = 10;
+    const ROLE_DEFAULT_USER = 0;
+    const ROLE_ADMIN = 1;
 
-	const IS_NOW_REGISTERED = 0;
-	const IS_ALREADY_REGISTERED = 1;
+    const STATUS_DELETED_LABEL = "Удаленный";
+    const STATUS_BLOCKED_LABEL = "Заблокированный";
+    const STATUS_ACTIVE_LABEL = "Активный";
 
-	const IS_NOT_EMAIL_CONFIRMED = 0;
-	const IS_EMAIL_CONFIRMED = 1;
+    const ROLE_DEFAULT_USER_LABEL = "Обычный";
+    const ROLE_ADMIN_LABEL = "Администратор";
 
-	const STATUS_DELETED_LABEL = "Удаленный";
-	const STATUS_BLOCKED_LABEL = "Заблокированный";
-	const STATUS_ACTIVE_LABEL = "Активный";
+    const AVATAR_FOLDER = "avatars";
 
-	const ROLE_DEFAULT_USER_LABEL = "Обычный";
-	const ROLE_ADMIN_LABEL = "Администратор";
+    const SCENARIO_CREATE_BY_ADMIN_PANEL = 'createByAdminPanel';
 
-	const IS_NOW_REGISTERED_LABEL = "Зарегистрирован только что";
-	const IS_ALREADY_REGISTERED_LABEL = "Уже был зарегистрирован";
-
-	const IS_NOT_EMAIL_CONFIRMED_LABEL = "Не подтверждена";
-	const IS_EMAIL_CONFIRMED_LABEL = "Подтверждена";
-
-	const AVATAR_FOLDER = "avatars";
-
-	const SCENARIO_CREATE_BY_ADMIN_PANEL = 'createByAdminPanel';
-
-	public $password;
+    public $password;
 
 
-	public function init()
-	{
-		parent::init();
+    public function init()
+    {
+        parent::init();
 
-		$this->status = static::STATUS_ACTIVE;
-		$this->role = static::ROLE_DEFAULT_USER;
-	}
+        $this->status = static::STATUS_ACTIVE;
+        $this->role = static::ROLE_DEFAULT_USER;
+    }
 
-	/**
-	 * @inheritdoc
-	 */
-	public function rules()
-	{
-		return array_merge(parent::rules(), [
-			['email', 'email'],
-			// phone is validated by validatePhone()
-			['phone', PhoneValidator::className()],
-			['phone', 'string', 'min' => 6, 'max' => 18,
-				'tooShort' => 'Значение "{attribute}" должно содержать не менее {min} символов',
-				'tooLong' => 'Значение "{attribute}" должно содержать не более {max} символов'
-			],
-			['password', 'string', 'min' => 6,
-				'tooShort' => 'Значение "{attribute}" должно содержать не менее {min} символов',
-			],
-			['password', PasswordValidator::className()],
-			[['password', 'name', 'lastname'], 'required', 'on' => static::SCENARIO_CREATE_BY_ADMIN_PANEL],
-
-            ['notificationsEnabled', 'default', 'value' => 1]
-		]);
-	}
+    /**
+     * @inheritdoc
+     */
+    public function rules()
+    {
+        return array_merge(parent::rules(), [
+            ['email', 'email'],
+            ['password', 'string', 'min' => 6,
+                'tooShort' => 'Значение "{attribute}" должно содержать не менее {min} символов',
+            ],
+            ['password', PasswordValidator::className()],
+            [['email', 'password', 'name', 'lastname'], 'required', 'on' => static::SCENARIO_CREATE_BY_ADMIN_PANEL],
+        ]);
+    }
 
     /**
      * @inheritdoc
@@ -112,22 +92,22 @@ class User extends BaseUser implements IdentityInterface
             'login' => 'Логин',
             'status' => 'Статус',
             'role' => 'Роль',
-        	'rating' => 'Рейтинг',
+            'rating' => 'Рейтинг',
             'email' => 'Электронная почта',
-        	'isEmailConfirmed' => 'Подтверждена ли почта',
+            'isEmailConfirmed' => 'Подтверждена ли почта',
             'phone' => 'Телефон',
-        	'isAlreadyRegistered' => 'Зарегистрирован ли был уже',
+            'isAlreadyRegistered' => 'Зарегистрирован ли был уже',
             'avatarFileId' => 'Аватар',
             'vkUserId' => 'Аккаунт Вконтакте',
             'facebookUserId' => 'Аккаунт Facebook',
             'twitterUserId' => 'Аккаунт Twitter',
             'instagramUserId' => 'Аккаунт Instagram',
-        	'authKey' => 'Auth Key',
-        	'createdAt' => 'Дата создания',
-        	'updatedAt' => 'Дата обновления',
+            'authKey' => 'Auth Key',
+            'createdAt' => 'Дата создания',
+            'updatedAt' => 'Дата обновления',
             'cityId' => 'ID города',
             'countryId' => 'ID страны',
-        	'password' => 'Пароль',
+            'password' => 'Пароль',
             'notificationsEnabled' => 'Уведомления включены',
             'lastActiveAt' => 'Дата последнего запроса пользователя к API'
         ];
@@ -138,7 +118,7 @@ class User extends BaseUser implements IdentityInterface
      */
     public function getUserRelations()
     {
-    	return $this->hasMany(UserRelation::className(), ['fromUserId' => 'userId']);
+        return $this->hasMany(UserRelation::className(), ['fromUserId' => 'userId']);
     }
 
     /**
@@ -146,53 +126,37 @@ class User extends BaseUser implements IdentityInterface
      */
     public function getReverseUserRelations()
     {
-    	return $this->hasMany(UserRelation::className(), ['toUserId' => 'userId']);
+        return $this->hasMany(UserRelation::className(), ['toUserId' => 'userId']);
     }
 
     public static function statusLabels()
     {
-    	return [
-    		self::STATUS_DELETED => self::STATUS_DELETED_LABEL,
-    		self::STATUS_BLOCKED => self::STATUS_BLOCKED_LABEL,
-    		self::STATUS_ACTIVE => self::STATUS_ACTIVE_LABEL
-    	];
+        return [
+            self::STATUS_DELETED => self::STATUS_DELETED_LABEL,
+            self::STATUS_BLOCKED => self::STATUS_BLOCKED_LABEL,
+            self::STATUS_ACTIVE => self::STATUS_ACTIVE_LABEL
+        ];
     }
 
     public static function roleLabels()
     {
-    	return [
-    		self::ROLE_DEFAULT_USER => self::ROLE_DEFAULT_USER_LABEL,
-    		self::ROLE_ADMIN => self::ROLE_ADMIN_LABEL
-    	];
+        return [
+            self::ROLE_DEFAULT_USER => self::ROLE_DEFAULT_USER_LABEL,
+            self::ROLE_ADMIN => self::ROLE_ADMIN_LABEL
+        ];
     }
 
-    public static function isAlreadyRegisteredLabels()
+
+    public function load($data, $formName = null)
     {
-    	return [
-    		self::IS_NOW_REGISTERED => self::IS_NOW_REGISTERED_LABEL,
-    		self::IS_ALREADY_REGISTERED => self::IS_ALREADY_REGISTERED_LABEL
-    	];
+        $result = parent::load($data, $formName);
+        if (isset($data['User']['password'])) {
+            if (!empty($data['User']['password'])) {
+                $this->setPassword($data['User']['password']);
+            }
+        }
+        return $result;
     }
-
-    public static function isEmailConfirmedLabels()
-    {
-    	return [
-    		self::IS_NOT_EMAIL_CONFIRMED => self::IS_NOT_EMAIL_CONFIRMED_LABEL,
-    		self::IS_EMAIL_CONFIRMED => self::IS_EMAIL_CONFIRMED_LABEL
-    	];
-    }
-
-
-	public function load($data, $formName = null)
-	{
-		$result = parent::load($data, $formName);
-		if (isset($data['User']['password'])) {
-			if (!empty($data['User']['password'])) {
-				$this->setPassword($data['User']['password']);
-			}
-		}
-		return $result;
-	}
 
     /**
      * {@inheritDoc}
@@ -200,14 +164,8 @@ class User extends BaseUser implements IdentityInterface
      */
     public function beforeSave($insert)
     {
-    	if (parent::beforeSave($insert)) {
-    		$this->updatedAt = time();
-			if (empty(trim($this->phone))) {
-				$this->phone = null;
-			}
-			if (empty(trim($this->email))) {
-				$this->email = null;
-			}
+        if (parent::beforeSave($insert)) {
+            $this->updatedAt = time();
 
             $currentUser = User::getUser();
             if (!$insert && $this->oldAttributes['role'] == self::ROLE_ADMIN) {
@@ -216,10 +174,10 @@ class User extends BaseUser implements IdentityInterface
                 }
             }
 
-    		return true;
-    	} else {
-    		return false;
-    	}
+            return true;
+        } else {
+            return false;
+        }
     }
 
 
@@ -247,7 +205,7 @@ class User extends BaseUser implements IdentityInterface
         }
 
         if (!empty($this->events)) {
-            foreach ($this->getEvents()->each() as /** @var Event $event */$event) {
+            foreach ($this->getEvents()->each() as /** @var Event $event */ $event) {
                 $event->delete();
             }
         }
@@ -283,19 +241,19 @@ class User extends BaseUser implements IdentityInterface
      */
     public function serializeShortToArray()
     {
-    	$userInfoObj = [];
-    	$userInfoObj["userId"] = $this->userId;
-    	$userInfoObj["name"] = $this->name;
-    	$userInfoObj["avatar"] = $this->getImageUrl();
+        $userInfoObj = [];
+        $userInfoObj["userId"] = $this->userId;
+        $userInfoObj["name"] = $this->name;
+        $userInfoObj["avatar"] = $this->getImageUrl();
 
-    	/** @var User $me */
-    	$me = User::getUser();
-    	if (!empty($me) && ($me->userId != $this->userId)) {
+        /** @var User $me */
+        $me = User::getUser();
+        if (!empty($me) && ($me->userId != $this->userId)) {
             $userInfoObj['toRelationStatus'] = UserRelation::isUserRelationExists($me->userId, $this->userId); // Подписан ли я на этого пользователя
             $userInfoObj['fromRelationStatus'] = UserRelation::isUserRelationExists($this->userId, $me->userId); // Подписан ли этот пользователь на меня
         }
 
-    	return $userInfoObj;
+        return $userInfoObj;
     }
 
     /** Получить сериализованный User
@@ -303,9 +261,9 @@ class User extends BaseUser implements IdentityInterface
      */
     public function serializeToArray()
     {
-    	$userInfoObj = $this->serializeShortToArray();
-    	$userInfoObj["lastname"] = $this->lastname;
-    	$userInfoObj["dateOfBirth"] = (int)$this->dateOfBirth;
+        $userInfoObj = $this->serializeShortToArray();
+        $userInfoObj["lastname"] = $this->lastname;
+        $userInfoObj["dateOfBirth"] = (int)$this->dateOfBirth;
         $userInfoObj["rating"] = $this->rating;
         $userInfoObj["email"] = $this->email;
         if (!empty($this->city)) {
@@ -318,10 +276,9 @@ class User extends BaseUser implements IdentityInterface
         $me = User::getUser();
         if (!empty($me) && ($me->userId == $this->userId)) {
             $userInfoObj["login"] = $this->login;
-        	$userInfoObj["phone"] = $this->phone;
             $userInfoObj["haveProAccount"] = $this->hasActiveSubscription();
         }
-    	return $userInfoObj;
+        return $userInfoObj;
     }
 
     /**
@@ -332,7 +289,7 @@ class User extends BaseUser implements IdentityInterface
      */
     public static function findByUsername($name)
     {
-    	return static::findOne(['name' => $name, 'status' => self::STATUS_ACTIVE]);
+        return static::findOne(['name' => $name, 'status' => self::STATUS_ACTIVE]);
     }
 
     /**
@@ -343,7 +300,7 @@ class User extends BaseUser implements IdentityInterface
      */
     public function validatePassword($password)
     {
-    	return \Yii::$app->security->validatePassword($password, $this->passwordHash);
+        return \Yii::$app->security->validatePassword($password, $this->passwordHash);
     }
 
     /**
@@ -353,17 +310,17 @@ class User extends BaseUser implements IdentityInterface
      */
     public function setPassword($password)
     {
-    	$this->passwordHash = Yii::$app->security->generatePasswordHash($password);
+        $this->passwordHash = Yii::$app->security->generatePasswordHash($password);
     }
 
-	/**
+    /**
      * Generates password hash from password and sets it to the model
      *
      * @param string $password
      */
     public function getPassword()
     {
-    	return '';
+        return '';
     }
 
     public function isRoleOrPasswordChanged()
@@ -393,7 +350,7 @@ class User extends BaseUser implements IdentityInterface
      */
     public static function findIdentity($id)
     {
-    	return User::findOne(['userId' => $id, 'status' => self::STATUS_ACTIVE]);
+        return User::findOne(['userId' => $id, 'status' => self::STATUS_ACTIVE]);
     }
 
     /**
@@ -403,19 +360,19 @@ class User extends BaseUser implements IdentityInterface
      */
     public static function findIdentityByAccessToken($token, $type = null)
     {
-    	/**
-    	 * @var AccessToken $accessTokenModel
-    	 */
-    	$accessTokenModel = AccessToken::find()->where(['token' => $token])->one();
-    	if (empty($accessTokenModel)) {
-    		return null;
-    	}
+        /**
+         * @var AccessToken $accessTokenModel
+         */
+        $accessTokenModel = AccessToken::find()->where(['token' => $token])->one();
+        if (empty($accessTokenModel)) {
+            return null;
+        }
 
-    	/**
-    	 * @var User $user
-    	 */
-    	$user = self::findIdentity($accessTokenModel->userId);
-    	return $user;
+        /**
+         * @var User $user
+         */
+        $user = self::findIdentity($accessTokenModel->userId);
+        return $user;
     }
 
     /**
@@ -423,23 +380,7 @@ class User extends BaseUser implements IdentityInterface
      */
     public function getId()
     {
-    	return $this->getPrimaryKey();
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function getAuthKey()
-    {
-    	return $this->authKey;
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function validateAuthKey($authKey)
-    {
-    	return $this->getAuthKey() === $authKey;
+        return $this->getPrimaryKey();
     }
 
     /** Регистрация пользователя по email и password
@@ -449,19 +390,19 @@ class User extends BaseUser implements IdentityInterface
      */
     public static function registrateByEmail($email, $password)
     {
-    	/**
-    	 * @var BaseUser
-    	 */
-    	$newUser = new self();
-    	$newUser->email = $email;
-    	if (!empty($password)) {
+        /**
+         * @var BaseUser
+         */
+        $newUser = new self();
+        $newUser->email = $email;
+        if (!empty($password)) {
             $newUser->setPassword($password);
         }
-    	$newUser->role = self::ROLE_DEFAULT_USER;
-    	$newUser->status = self::STATUS_ACTIVE;
-    	$newUser->isAlreadyRegistered = self::IS_NOW_REGISTERED;
-    	$newUser->save();
-    	return $newUser;
+        $newUser->role = self::ROLE_DEFAULT_USER;
+        $newUser->status = self::STATUS_ACTIVE;
+        $newUser->isAlreadyRegistered = self::IS_NOW_REGISTERED;
+        $newUser->save();
+        return $newUser;
     }
 
     /**
@@ -470,15 +411,15 @@ class User extends BaseUser implements IdentityInterface
      */
     public static function registrateByPhone($phone)
     {
-    	/**
-    	 * @var User $newUser
-    	 */
-    	$newUser = new User();
-    	$newUser->phone = $phone;
-    	$newUser->role = User::ROLE_DEFAULT_USER;
-    	$newUser->status = User::STATUS_ACTIVE;
-    	$newUser->save();
-    	return $newUser;
+        /**
+         * @var User $newUser
+         */
+        $newUser = new User();
+        $newUser->phone = $phone;
+        $newUser->role = User::ROLE_DEFAULT_USER;
+        $newUser->status = User::STATUS_ACTIVE;
+        $newUser->save();
+        return $newUser;
     }
 
     /** Получение или создание accessToken для пользователя
@@ -486,21 +427,21 @@ class User extends BaseUser implements IdentityInterface
      */
     public function getAccessToken()
     {
-    	/**
-    	 * @var BaseAccessToken $accessToken
-    	 */
-    	$accessToken = $this->getAccessTokens()->one();
-    	if (empty($accessToken)) {
-    		/**
-    		 * @var BaseAccessToken $accessToken
-    		 */
-    		$accessToken = new BaseAccessToken();
-    		$accessToken->userId = $this->userId;
-    		$accessToken->token = \Yii::$app->security->generateRandomString();
-    		$accessToken->save();
-    	}
+        /**
+         * @var BaseAccessToken $accessToken
+         */
+        $accessToken = $this->getAccessTokens()->one();
+        if (empty($accessToken)) {
+            /**
+             * @var BaseAccessToken $accessToken
+             */
+            $accessToken = new BaseAccessToken();
+            $accessToken->userId = $this->userId;
+            $accessToken->token = \Yii::$app->security->generateRandomString();
+            $accessToken->save();
+        }
 
-    	return $accessToken->token;
+        return $accessToken->token;
     }
 
     /** Получить пользователя по номеру телефона
@@ -509,8 +450,8 @@ class User extends BaseUser implements IdentityInterface
      */
     public static function findByPhone($phone)
     {
-    	$phone = PhoneValidator::formatPhone($phone);
-    	return User::find()->where(['phone' => $phone])->one();
+        $phone = PhoneValidator::formatPhone($phone);
+        return User::find()->where(['phone' => $phone])->one();
     }
 
     /** Получить пользователя по email
@@ -519,7 +460,7 @@ class User extends BaseUser implements IdentityInterface
      */
     public static function findUserByEmail($email)
     {
-    	return self::find()->where(['email' => $email])->one();
+        return self::find()->where(['email' => $email])->one();
     }
 
     /**
@@ -528,7 +469,7 @@ class User extends BaseUser implements IdentityInterface
      */
     public static function getUser()
     {
-    	return !empty(\Yii::$app->user) ? \Yii::$app->user->getIdentity() : null;
+        return !empty(\Yii::$app->user) ? \Yii::$app->user->getIdentity() : null;
     }
 
     /** Получить абсолютный путь до аватарки пользователя
@@ -585,22 +526,22 @@ class User extends BaseUser implements IdentityInterface
      */
     public function getFullUserName()
     {
-    	return $this->name . ' ' . $this->lastname;
+        return $this->name . ' ' . $this->lastname;
     }
 
-	public function getDescription()
+    public function getDescription()
     {
-		$description = '';
-		if (!empty($this->lastname)) {
-			$description .= $this->lastname . ' ';
-		}
-		if (!empty($this->name)) {
-			$description .= $this->name . ' ';
-		}
-		if (!empty($this->login)) {
-			$description .= '(' . $this->login . ')';
-		}
-    	return $description;
+        $description = '';
+        if (!empty($this->lastname)) {
+            $description .= $this->lastname . ' ';
+        }
+        if (!empty($this->name)) {
+            $description .= $this->name . ' ';
+        }
+        if (!empty($this->login)) {
+            $description .= '(' . $this->login . ')';
+        }
+        return $description;
     }
 
     /**
@@ -609,7 +550,7 @@ class User extends BaseUser implements IdentityInterface
      */
     public function isUserActive()
     {
-    	return ($this->status == self::STATUS_ACTIVE);
+        return ($this->status == self::STATUS_ACTIVE);
     }
 
     /**
@@ -618,7 +559,7 @@ class User extends BaseUser implements IdentityInterface
      */
     public function isUserBlocked()
     {
-    	return ($this->status == self::STATUS_BLOCKED);
+        return ($this->status == self::STATUS_BLOCKED);
     }
 
     /**
@@ -626,7 +567,7 @@ class User extends BaseUser implements IdentityInterface
      */
     public function isUserDefault()
     {
-    	return ($this->role == self::ROLE_DEFAULT_USER);
+        return ($this->role == self::ROLE_DEFAULT_USER);
     }
 
     /**
@@ -634,7 +575,7 @@ class User extends BaseUser implements IdentityInterface
      */
     public function isUserAdmin()
     {
-    	return ($this->role == self::ROLE_ADMIN);
+        return ($this->role == self::ROLE_ADMIN);
     }
 
     /**
@@ -644,7 +585,7 @@ class User extends BaseUser implements IdentityInterface
      */
     public static function getUserByVkId($socialUserId)
     {
-    	return User::find()->where(['vkUserId' => $socialUserId])->one();
+        return User::find()->where(['vkUserId' => $socialUserId])->one();
     }
 
     /**
@@ -654,12 +595,12 @@ class User extends BaseUser implements IdentityInterface
      */
     public static function getUserByFbId($socialUserId)
     {
-    	return User::find()->where(['facebookUserId' => $socialUserId])->one();
+        return User::find()->where(['facebookUserId' => $socialUserId])->one();
     }
 
     /**
      * Нахождение пользователя по id instagram
-     * @param int $socialUserId     instagramId
+     * @param int $socialUserId instagramId
      * @return array|User|yii\db\ActiveRecord|null
      */
     public static function getUserByInstagramId($socialUserId)
@@ -676,17 +617,17 @@ class User extends BaseUser implements IdentityInterface
     public function saveUserGeoPosition($latitude, $longitude)
     {
         /** @var UserGeoPosition $userGeoPosition */
-    	$userGeoPosition = $this->userGeoPosition;
-    	if (empty($userGeoPosition)) {
-    		$userGeoPosition = new UserGeoPosition();
-    		$userGeoPosition->userId = $this->userId;
-    	}
+        $userGeoPosition = $this->userGeoPosition;
+        if (empty($userGeoPosition)) {
+            $userGeoPosition = new UserGeoPosition();
+            $userGeoPosition->userId = $this->userId;
+        }
 
-    	$userGeoPosition->latitude = $latitude;
-    	$userGeoPosition->longitude = $longitude;
-    	$userGeoPosition->save();
+        $userGeoPosition->latitude = $latitude;
+        $userGeoPosition->longitude = $longitude;
+        $userGeoPosition->save();
 
-    	return $userGeoPosition;
+        return $userGeoPosition;
     }
 
     /**
@@ -695,8 +636,8 @@ class User extends BaseUser implements IdentityInterface
      */
     public function getMyChatIds()
     {
-    	$ids = $this->getChatMembers()->select('chatId')->asArray()->column();
-    	return $ids;
+        $ids = $this->getChatMembers()->select('chatId')->asArray()->column();
+        return $ids;
     }
 
     /**
@@ -715,10 +656,10 @@ class User extends BaseUser implements IdentityInterface
             ->one();
 
         if (!empty($chat)) {
-    		return $chat;
-    	}
+            return $chat;
+        }
 
-    	return null;
+        return null;
     }
 
     /**
@@ -727,19 +668,19 @@ class User extends BaseUser implements IdentityInterface
      */
     public function getActiveUserSubscription()
     {
-    	$time = time();
+        $time = time();
 
-    	/**
-    	 * @var UserSubscription $userSubscription
-    	 */
-    	$userSubscription = $this->getUserSubscriptions()
-	    	->andWhere(['and',
-	    		['<=', 'userSubscription.fromDate', $time],
-	    		['>=', 'userSubscription.toDate', $time]
-	    	])
-	    	->one();
+        /**
+         * @var UserSubscription $userSubscription
+         */
+        $userSubscription = $this->getUserSubscriptions()
+            ->andWhere(['and',
+                ['<=', 'userSubscription.fromDate', $time],
+                ['>=', 'userSubscription.toDate', $time]
+            ])
+            ->one();
 
-    	return $userSubscription;
+        return $userSubscription;
     }
 
     /**
@@ -748,35 +689,35 @@ class User extends BaseUser implements IdentityInterface
      */
     public function hasActiveSubscription()
     {
-    	/**
-    	 * @var UserSubscription $userSubscription
-    	 */
-    	$userSubscription = $this->getActiveUserSubscription();
-		return !empty($userSubscription);
+        /**
+         * @var UserSubscription $userSubscription
+         */
+        $userSubscription = $this->getActiveUserSubscription();
+        return !empty($userSubscription);
     }
-    
+
     /**
      * @return \yii\db\ActiveQuery
      */
     public function getOwnerRequests()
     {
-    	return $this->hasMany(Request::className(), ['ownerUserId' => 'userId']);
+        return $this->hasMany(Request::className(), ['ownerUserId' => 'userId']);
     }
-    
+
     /**
      * @return \yii\db\ActiveQuery
      */
     public function getAssignedUserRequests()
     {
-    	return $this->hasMany(Request::className(), ['assignedUserId' => 'userId']);
+        return $this->hasMany(Request::className(), ['assignedUserId' => 'userId']);
     }
-    
+
     /**
      * @return ActiveQuery
      */
     public static function findActiveUsers()
     {
-    	return User::find()->where(['user.status' => User::STATUS_ACTIVE]);
+        return User::find()->where(['user.status' => User::STATUS_ACTIVE]);
     }
 
 
@@ -792,18 +733,22 @@ class User extends BaseUser implements IdentityInterface
         return $user;
     }
 
-    public function fakeDelete()
+    public function delete()
     {
-        $transaction = \Yii::$app->db->beginTransaction();
-        $this->isDeleted = 1;
         AccessToken::deleteAll(['userId' => $this->primaryKey]);
 
-        if ($this->save()) {
-            $transaction->commit();
-            return true;
-        }
+        $this->status = self::STATUS_DELETED;
 
-        $transaction->rollback();
-        return false;
+        return $this->save();
+    }
+
+    public function getAuthKey()
+    {
+        // TODO: Implement getAuthKey() method.
+    }
+
+    public function validateAuthKey($authKey)
+    {
+        // TODO: Implement validateAuthKey() method.
     }
 }
