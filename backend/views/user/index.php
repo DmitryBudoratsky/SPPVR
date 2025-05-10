@@ -1,15 +1,12 @@
 <?php
 
 
-use backend\compenents\helpers\widgets\FancyboxHelper;
 use common\components\helpers\TypeHelper;
 use common\models\db\Settings;
 use common\models\db\User;
 use kartik\daterange\DateRangePicker;
-use kartik\select2\Select2;
-use newerton\fancybox\FancyBox;
 use kartik\grid\GridView;
-use yii\widgets\Pjax;
+use kartik\select2\Select2;
 use yii\helpers\Html;
 
 /* @var $this yii\web\View */
@@ -49,7 +46,6 @@ if (empty($referrer) || !strpos($referrer, '/user/index')) {
             [
                 'attribute' => 'name',
                 'format' => 'raw',
-                'contentOptions' => ['style' => 'width: 10%;'],
                 'value' => function (/** @var User $model */ $model) {
                     return (!empty($model->name)) ? Html::a($model->name, ['user/view', 'id' => $model->userId]) : '';
                 },
@@ -57,7 +53,6 @@ if (empty($referrer) || !strpos($referrer, '/user/index')) {
 
             [
                 'attribute' => 'lastname',
-                'contentOptions' => ['style' => 'width: 10%;'],
                 'format' => 'raw',
                 'value' => function (/** @var User $model */ $model) {
                     return (!empty($model->lastname)) ? Html::a($model->lastname, ['user/view', 'id' => $model->userId]) : '';
@@ -66,13 +61,16 @@ if (empty($referrer) || !strpos($referrer, '/user/index')) {
 
             [
                 'attribute' => 'status',
+                'contentOptions' => ['style' => 'width: 5%;'],
                 'format' => 'raw',
                 'value' => function ($model) {
-                    return Html::tag('span',
-                        User::statusLabels()[$model->status],
-                        [
-                            'class' => 'badge badge-' . ($model->isUserActive() ? 'success' : 'danger')
-                        ]
+                    return Html::tag('h5',
+                        Html::tag('span',
+                            User::statusLabels()[$model->status],
+                            [
+                                'class' => 'badge badge-' . ($model->isUserActive() ? 'success' : 'danger')
+                            ]
+                        )
                     );
                 },
                 'filter' => Select2::widget([

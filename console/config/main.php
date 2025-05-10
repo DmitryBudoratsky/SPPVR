@@ -19,7 +19,7 @@ return [
                 'console\migrations\user',
                 'console\migrations\file',
     			'console\migrations\chat',
-                'console\migrations\case',
+                'console\migrations\incident',
             ],
     	],
     ],

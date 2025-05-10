@@ -1,12 +1,10 @@
 <?php
 
-use backend\compenents\helpers\widgets\FancyboxHelper;
+use common\components\helpers\TypeHelper;
+use common\models\db\PushToken;
+use common\models\db\User;
 use yii\helpers\Html;
 use yii\widgets\DetailView;
-use common\components\helpers\TypeHelper;
-use common\models\db\User;
-use yii\db\ActiveQuery;
-use common\models\db\PushToken;
 
 /* @var $this yii\web\View */
 /* @var $model common\models\db\User */

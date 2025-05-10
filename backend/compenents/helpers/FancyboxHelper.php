@@ -1,6 +1,6 @@
 <?php
 
-namespace backend\compenents\helpers\widgets;
+namespace backend\compenents\helpers;
 
 use newerton\fancybox3\FancyBox;
 
@@ -8,7 +8,7 @@ use newerton\fancybox3\FancyBox;
  * Description of FancyboxHelper
  *
  */
-class FancyboxHelper
+class ancyboxHelper
 {
 	static public function renderFancybox()
 	{

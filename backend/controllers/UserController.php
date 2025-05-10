@@ -41,8 +41,6 @@ class UserController extends PrivateController
      */
     public function actionIndex()
     {
-        $this->layout = self::LAYOUT_FULLSIZE;
-
         $searchModel = new UserSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
@@ -50,24 +48,6 @@ class UserController extends PrivateController
             'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,
         ]);
-    }
-    
-    /**
-     * Lists all User blocked models.
-     * @return mixed
-     */
-    public function actionBlockedUsers()
-    {
-        $this->layout = self::LAYOUT_FULLSIZE;
-    	 
-    	$searchModel = new UserSearch();
-    	$searchModel->scenario = $searchModel::SCENARIO_BLOCKED_USERS;
-    	$dataProvider = $searchModel->search(Yii::$app->request->queryParams);
-
-    	return $this->render('index', [
-    		'searchModel' => $searchModel,
-    		'dataProvider' => $dataProvider,
-    	]);
     }
 
     /**

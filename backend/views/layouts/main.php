@@ -101,98 +101,11 @@ $isFullsize = isset($isFullsize) ? $isFullsize : false;
             ['label' => 'Api Debug Panel', 'url' => \Yii::$app->frontendUrlManager->baseUrl . '/debug'],
         ];
 
-        // --- push уведомления ---
-        if (in_array('pushNotification', $existTablesArr)) {
-            $devItems [] = ['label' => 'Отправить PUSH', 'url' => ['push-notification/create']];
-            $devItems [] = ['label' => 'Список PUSH', 'url' => ['push-notification/index']];
-        }
-
-        // Отслеживание координат
-        if (in_array('geolocation', $existTablesArr)) {
-            $devItems[] = ['label' => 'Отслеживание координат', 'url' => ['geolocation/index']];
-        }
-
         $menuItems[] = ['label' => 'Dev', 'items' => $devItems];
 
         $menuItems[] = ['label' => 'Пользователи', 'url' => ['user/index']];
 
-        // --- чаты ---
-        if (in_array('chat', $existTablesArr)) {
-        	$menuItems[] = ['label' => 'Чаты', 'items' => [
-        		['label' => 'Персональные чаты', 'url' => ['chat/index', 'type' => Chat::TYPE_PERSONAL_CHAT]],
-        		['label' => 'Групповые чаты', 'url' => ['chat/index', 'type' => Chat::TYPE_GROUP_CHAT]],
-        	]];
-        }
-
-        // --- контент ---
-        $contentItems = [];
-
-        // ---о нас ---
-        if (in_array('aboutUs', $existTablesArr)) {
-            $contentItems[] = ['label' => 'О нас', 'url' => ['about-us/index']];
-        }
-
-        // --- страницы ---
-        if (in_array('page', $existTablesArr)) {
-            $contentItems[] = ['label' => 'Страницы', 'url' => ['page/index']];
-        }
-        // --- страны ---
-        if (in_array('country', $existTablesArr)) {
-            $contentItems[] = ['label' => 'Страны', 'url' => ['country/index']];
-        }
-        // --- города ---
-        if (in_array('city', $existTablesArr)) {
-            $contentItems[] = ['label' => 'Города', 'url' => ['city/index']];
-        }
-        // --- заявки ---
-        if (in_array('request', $existTablesArr)) {
-            $contentItems[] = ['label' => 'Заявки', 'url' => ['request/index']];
-        }
-        // --- Услуги ---
-        if (in_array('service', $existTablesArr)) {
-            $contentItems[] =  ['label' => 'Услуги', 'url' => ['service/index']];
-        }
-
-        // --- Марки автомобиля ---
-        if (in_array('carBrand', $existTablesArr)) {
-            $contentItems[] =  ['label' => 'Марки автомобиля', 'url' => ['vehicle-brand/index']];
-        }
-
-        // --- Автомобили ---
-        if (in_array('vehicle', $existTablesArr)) {
-            $contentItems[] =  ['label' => 'Автомобили', 'url' => ['vehicle/index']];
-        }
-
-        // --- Промо коды ---
-        if (in_array('promoCode', $existTablesArr)) {
-            $contentItems[] =  ['label' => 'Промо коды', 'url' => ['promo-code/index']];
-        }
-        if (in_array('promoCodeActivation', $existTablesArr)) {
-            $contentItems[] =  ['label' => 'Активации промо кодов', 'url' => ['promo-code-activation/index']];
-        }
-
-        // --- Lms Курсы ---
-        if (in_array('lmsCourse', $existTablesArr)) {
-            $contentItems[] =  ['label' => 'Lms Курсы', 'url' => ['lms/lms-course']];
-        }
-
-        /** Quiz  */
-        if (in_array('quiz', $existTablesArr)) {
-            $contentItems[] =  ['label' => 'Quiz', 'url' => ['lms/quiz/index']];
-        }
-
-        // Уведомления
-        if (in_array('notification', $existTablesArr)) {
-            $contentItems[] = ['label' => 'Уведомления', 'url' => ['notification/index']];
-        }
-
-        $menuItems[] = ['label' => 'Контент', 'items' => $contentItems];
-
-        $menuItems[] = [
-            'label' => 'Выйти (' . Yii::$app->user->identity->name . ')',
-            'url' => ['/site/logout'],
-            'linkOptions' => ['data-method' => 'post']
-        ];
+        $menuItems[] = ['label' => 'Случаи', 'url' => ['incident/index']];
     }
     echo Nav::widget([
 		'items' => $menuItems,
