@@ -69,6 +69,7 @@ class Incident extends BaseIncident
             'snils' => 'Снилс',
             'address' => 'Адрес',
             'anamnesis' => 'Анамнез',
+            'verdict' => 'Вердикт',
             'chatId' => 'Chat ID',
             'fileId' => 'File ID',
             'createdAt' => 'Дата создания',

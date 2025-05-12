@@ -96,6 +96,32 @@ class IncidentController extends Controller
     }
 
     /**
+     * Вынесение вердикта
+     * @param $id
+     * @return string|\yii\web\Response
+     * @throws NotFoundHttpException
+     * @throws \yii\db\Exception
+     */
+    public function actionWriteVerdict($id)
+    {
+        $model = $this->findModel($id);
+        $verdict = Yii::$app->request->post()['verdict'] ?? null;
+
+        if (!empty($verdict)) {
+            $model->verdict = $verdict;
+            $model->status = Incident::STATUS_FINISHED;
+        }
+
+        if ($model->isAttributeChanged('status') && $model->save()) {
+            return $this->redirect(['view', 'id' => $model->incidentId]);
+        }
+
+        return $this->render('verdict-form', [
+            'model' => $model,
+        ]);
+    }
+
+    /**
      * Deletes an existing Incident model.
      * If deletion is successful, the browser will be redirected to the 'index' page.
      * @param integer $id

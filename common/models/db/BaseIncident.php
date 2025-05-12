@@ -19,6 +19,7 @@ use Yii;
  * @property int $fileId
  * @property int $createdAt
  * @property int $updatedAt
+ * @property string $verdict
  *
  * @property Chat $chat
  * @property File $file
@@ -40,9 +41,9 @@ class BaseIncident extends \common\models\db\base\BaseModel
     {
         return [
             [['status', 'birthDate', 'chatId', 'fileId', 'createdAt', 'updatedAt'], 'integer'],
-            [['anamnesis'], 'string'],
+            [['anamnesis', 'verdict'], 'string'],
             [['patientName', 'address'], 'string', 'max' => 255],
-            [['policy'], 'string', 'max' => 19],
+            [['policy'], 'string', 'max' => 16],
             [['snils'], 'string', 'max' => 14],
             [['chatId'], 'exist', 'skipOnError' => true, 'targetClass' => Chat::className(), 'targetAttribute' => ['chatId' => 'chatId']],
             [['fileId'], 'exist', 'skipOnError' => true, 'targetClass' => File::className(), 'targetAttribute' => ['fileId' => 'fileId']],
@@ -67,6 +68,7 @@ class BaseIncident extends \common\models\db\base\BaseModel
             'fileId' => 'File ID',
             'createdAt' => 'Created At',
             'updatedAt' => 'Updated At',
+            'verdict' => 'Verdict',
         ];
     }
 

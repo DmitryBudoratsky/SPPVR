@@ -2,6 +2,7 @@
 
 /* @var $this \yii\web\View */
 /* @var $content string */
+
 /* @var bool $isFullsize */
 
 use backend\assets\AppAsset;
@@ -22,17 +23,18 @@ $isFullsize = isset($isFullsize) ? $isFullsize : false;
 
 ?>
 <?php $this->beginPage() ?>
-<!DOCTYPE html>
-<html lang="<?= Yii::$app->language ?>">
-<head>
-    <meta charset="<?= Yii::$app->charset ?>">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <?= Html::csrfMetaTags() ?>
-    <title><?= Html::encode($this->title) ?></title>
-    <?php $this->head() ?>
+    <!DOCTYPE html>
+    <html lang="<?= Yii::$app->language ?>">
 
-    <?php
-    $this->registerJs("
+    <head>
+        <meta charset="<?= Yii::$app->charset ?>">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <?= Html::csrfMetaTags() ?>
+        <title><?= Html::encode($this->title) ?></title>
+        <?php $this->head() ?>
+
+        <?php
+        $this->registerJs("
         $(document).on('click', '.pjax-delete-link', function(e) {
             e.preventDefault();
             var deleteUrl = $(this).attr('delete-url');
@@ -63,77 +65,81 @@ $isFullsize = isset($isFullsize) ? $isFullsize : false;
             });
         });
     ");
-    ?>
+        ?>
 
-</head>
-<body>
-<?php $this->beginBody() ?>
+    </head>
 
-<?php $containerClass = (isset($isFullsize) && $isFullsize) ? 'container-fluid' : 'container'; ?>
+    <body>
+    <?php $this->beginBody() ?>
 
-<!--существующие таблицы -->
-<?php $existTablesArr = \Yii::$app->db->schema->getTableNames() ?>
+    <?php $containerClass = (isset($isFullsize) && $isFullsize) ? 'container-fluid' : 'container'; ?>
 
-<div class="wrap">
-    <?php
-    NavBar::begin([
-        'brandLabel' => \Yii::$app->name,
-        'brandUrl' => \Yii::$app->homeUrl,
-        'brandOptions' => false,
-        'options' => [
-            'class' => 'fixed-top navbar-inverse navbar-expand-lg navbar-dark bg-dark',
-        ],
-    	'innerContainerOptions' => [
-    		'class' => $isFullsize ? 'container-fluid' : 'container',
-    	],
-        'collapseOptions' => [
-            'class' => ['collapse', 'navbar-collapse', 'justify-content-end'],
-            'id' => 'navbarCollapse',
-        ],
-    ]);
-    $menuItems = [];
-    if (Yii::$app->user->isGuest) {
-        $menuItems[] = ['label' => 'Login', 'url' => ['/site/login']];
-    } else {
-        $devItems = [
-            ['label' => 'Gii', 'url' => ['/gii']],
-            ['label' => 'Admin Debug Panel', 'url' => \Yii::$app->urlManager->baseUrl . '/debug'],
-            ['label' => 'Api Debug Panel', 'url' => \Yii::$app->frontendUrlManager->baseUrl . '/debug'],
-        ];
+    <!--существующие таблицы -->
+    <?php $existTablesArr = \Yii::$app->db->schema->getTableNames() ?>
 
-        $menuItems[] = ['label' => 'Dev', 'items' => $devItems];
+    <div class="wrap">
+        <?php
+        NavBar::begin([
+            'brandLabel' => \Yii::$app->name,
+            'brandUrl' => \Yii::$app->homeUrl,
+            'brandOptions' => false,
+            'options' => [
+                'class' => 'fixed-top navbar-inverse navbar-expand-lg navbar-dark bg-dark',
+            ],
+            'innerContainerOptions' => [
+                'class' => $isFullsize ? 'container-fluid' : 'container',
+            ],
+            'collapseOptions' => [
+                'class' => ['collapse', 'navbar-collapse', 'justify-content-end'],
+                'id' => 'navbarCollapse',
+            ],
+        ]);
+        $menuItems = [];
+        if (Yii::$app->user->isGuest) {
+            $menuItems[] = ['label' => 'Login', 'url' => ['/site/login']];
+        } else {
+            $devItems = [
+                ['label' => 'Gii', 'url' => ['/gii']],
+                ['label' => 'Admin Debug Panel', 'url' => \Yii::$app->urlManager->baseUrl . '/debug'],
+                ['label' => 'Api Debug Panel', 'url' => \Yii::$app->frontendUrlManager->baseUrl . '/debug'],
+            ];
 
-        $menuItems[] = ['label' => 'Пользователи', 'url' => ['user/index']];
+            $menuItems[] = ['label' => 'Dev', 'items' => $devItems];
 
-        $menuItems[] = ['label' => 'Случаи', 'url' => ['incident/index']];
-    }
-    echo Nav::widget([
-		'items' => $menuItems,
-        'activateParents' => false,
-		'encodeLabels' => false,
-        'options' => ['class' => 'navbar-nav'],
-    ]);
-    NavBar::end();
-    ?>
+            $menuItems[] = ['label' => 'Пользователи', 'url' => ['user/index']];
 
-	<div class="<?= $containerClass ?>">
-        <?= Breadcrumbs::widget([
-            'links' => isset($this->params['breadcrumbs']) ? $this->params['breadcrumbs'] : [],
-        ]) ?>
-        <?= Alert::widget() ?>
-        <?= $content ?>
+            $menuItems[] = ['label' => 'Случаи', 'url' => ['incident/index']];
+
+            $menuItems[] = ['label' => 'Выйти (' . \Yii::$app->user->identity->name . ')', 'url' => ['site/logout'], 'linkOptions' => ['data-method' => 'post']];
+        }
+        echo Nav::widget([
+            'items' => $menuItems,
+            'activateParents' => false,
+            'encodeLabels' => false,
+            'options' => ['class' => 'navbar-nav'],
+        ]);
+        NavBar::end();
+        ?>
+
+        <div class="<?= $containerClass ?>">
+            <?= Breadcrumbs::widget([
+                'links' => isset($this->params['breadcrumbs']) ? $this->params['breadcrumbs'] : [],
+            ]) ?>
+            <?= Alert::widget() ?>
+            <?= $content ?>
+        </div>
     </div>
-</div>
 
-<footer class="footer fixed-bottom">
-    <div class="<?= $containerClass ?>">
-        <p class="float-left">&copy; <?= Html::encode(Yii::$app->name) ?> <?= date('Y') ?></p>
+    <footer class="footer fixed-bottom">
+        <div class="<?= $containerClass ?>">
+            <p class="float-left">&copy; <?= Html::encode(Yii::$app->name) ?> <?= date('Y') ?></p>
 
-        <p class="float-right"><?= Yii::powered() ?></p>
-    </div>
-</footer>
+            <p class="float-right"><?= Yii::powered() ?></p>
+        </div>
+    </footer>
 
-<?php $this->endBody() ?>
-</body>
-</html>
+    <?php $this->endBody() ?>
+    </body>
+
+    </html>
 <?php $this->endPage() ?>

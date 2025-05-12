@@ -35,7 +35,7 @@ $this->params['breadcrumbs'][] = $this->title;
                         Html::tag('span',
                             Incident::statusLabels()[$model->status],
                             [
-                                'class' => 'badge badge-' . ($model->status == Incident::STATUS_FINISHED ? 'primary' : 'success')
+                                'class' => 'badge badge-' . ($model->status == Incident::STATUS_FINISHED ? 'info' : 'success')
                             ]
                         )
                     );
