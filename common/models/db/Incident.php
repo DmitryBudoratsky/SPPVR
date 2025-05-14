@@ -16,6 +16,11 @@ class Incident extends BaseIncident
     public function rules()
     {
         return array_merge(parent::rules(), [
+            [['patientName', 'birthDateString', 'anamnesis'], 'required'],
+            [['patientName', 'anamnesis', 'verdict'], 'trim'],
+            [['verdict'], 'required', 'when' => function (self $model) {
+                return $model->status == self::STATUS_FINISHED;
+            }],
             [['birthDateString'], 'date', 'format' => 'php:d.m.Y'],
         ]);
     }
@@ -82,6 +87,30 @@ class Incident extends BaseIncident
         return [
             self::STATUS_CREATED => self::STATUS_CREATED_LABEL,
             self::STATUS_FINISHED => self::STATUS_FINISHED_LABEL
+        ];
+    }
+
+    /**
+     * Получение отчёта по инциденту в виде одномерного массива
+     * @return array<int|string>
+     * @throws \yii\base\InvalidConfigException
+     */
+    public function getAsReportArray(): array
+    {
+        return [
+            "Случай №$this->incidentId",
+            $this->getAttributeLabel('incidentId') => $this->incidentId,
+            $this->getAttributeLabel('status') => self::statusLabels()[$this->status],
+            $this->getAttributeLabel('patientName') => $this->patientName,
+            $this->getAttributeLabel('birthDateString') => $this->birthDateString,
+            $this->getAttributeLabel('policy') => $this->policy,
+            $this->getAttributeLabel('snils') => $this->snils,
+            $this->getAttributeLabel('address') => $this->address,
+            $this->getAttributeLabel('anamnesis') => $this->anamnesis,
+            $this->getAttributeLabel('verdict') => $this->verdict,
+            $this->getAttributeLabel('createdAt') => \Yii::$app->formatter->asDate($this->createdAt, 'php:d.m.Y H:i'),
+            $this->getAttributeLabel('updatedAt') => \Yii::$app->formatter->asDate($this->updatedAt, 'php:d.m.Y H:i'),
+            '© ' . \Yii::$app->name . ' ' . \Yii::$app->formatter->asDate(time(), 'php:Y')
         ];
     }
 }

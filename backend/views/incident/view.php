@@ -1,5 +1,6 @@
 <?php
 
+use kartik\export\ExportMenu;
 use yii\helpers\Html;
 use yii\widgets\DetailView;
 use common\models\db\Incident;
@@ -18,61 +19,39 @@ $this->params['breadcrumbs'][] = $this->title;
 
     <p>
         <?php if ($model->status == Incident::STATUS_CREATED): ?>
+
             <?= Html::a('Редактировать', ['update', 'id' => $model->incidentId], ['class' => 'btn btn-primary']) ?>
             <?= Html::a('Вынести вердикт', ['write-verdict', 'id' => $model->incidentId], ['class' => 'btn btn-info']) ?>
+
         <?php else: ?>
-            <?= Html::a('Скачать файл', ['upload-file', 'id' => $model->incidentId], ['class' => 'btn btn-info']) ?>
+
+            <?= Html::beginTag('div', [
+                'class' => "btn-group dropright",
+            ]); ?>
+
+            <?= Html::button('Скачать файлом', [
+                'type' => 'button',
+                'class' => 'btn btn-info dropdown-toggle',
+                'data-toggle' => 'dropdown',
+                'aria-haspopup' => 'true',
+                'aria-expanded' => 'false'
+            ]); ?>
+
+            <?= Html::beginTag('div', [
+                'class' => "dropdown-menu",
+            ]); ?>
+            <?= Html::a('PDF', ['download-as-file', 'id' => $model->incidentId, 'extension' => 'pdf'], ['class' => 'dropdown-item']) ?>
+            <?= Html::tag('div', null, ['class' => "dropdown-divider"]); ?>
+            <?= Html::a('CSV', ['download-as-file', 'id' => $model->incidentId, 'extension' => 'csv'], ['class' => 'dropdown-item']) ?>
+            <?= Html::tag('div', null, ['class' => "dropdown-divider"]); ?>
+            <?= Html::a('XLS', ['download-as-file', 'id' => $model->incidentId, 'extension' => 'xls'], ['class' => 'dropdown-item']) ?>
+            <?= Html::endTag('div'); ?>
+
+            <?= Html::endTag('div'); ?>
         <?php endif; ?>
     </p>
 
-    <?= DetailView::widget([
-        'model' => $model,
-        'attributes' => [
-            'incidentId',
-
-            [
-                'attribute' => 'status',
-                'format' => 'raw',
-                'value' => function (Incident $model) {
-                    return Html::tag('h5',
-                        Html::tag('span',
-                            Incident::statusLabels()[$model->status],
-                            [
-                                'class' => 'badge badge-' . ($model->status == Incident::STATUS_FINISHED ? 'info' : 'success')
-                            ]
-                        )
-                    );
-                }
-            ],
-
-            'patientName',
-
-            [
-                'attribute' => 'birthDate',
-                'format' => ['date', 'php:d.m.Y']
-            ],
-
-            'policy',
-            'snils',
-            'address',
-            'anamnesis',
-
-            [
-                'attribute' => 'verdict',
-                'visible' => $model->status == Incident::STATUS_FINISHED
-            ],
-
-            [
-                'attribute' => 'createdAt',
-                'format' => ['date', 'php:d.m.Y H:i']
-            ],
-
-            [
-                'attribute' => 'updatedAt',
-                'format' => ['date', 'php:d.m.Y H:i']
-            ],
-        ],
-    ]) ?>
+    <?= $this->render('_detail', ['model' => $model]) ?>
 
     <p>
         <?php if (empty($model->chatId) && $model->status == Incident::STATUS_CREATED): ?>

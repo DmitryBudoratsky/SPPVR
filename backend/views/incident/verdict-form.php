@@ -18,7 +18,7 @@ $this->params['breadcrumbs'][] = $this->title;
     <?php $form = ActiveForm::begin(); ?>
 
     <p>
-        <?= Html::textarea('verdict', $model->verdict, ['rows' => 6, 'class' => 'form-control']) ?>
+        <?= $form->field($model, 'verdict')->textarea(['rows' => 6]) ?>
     </p>
 
     <div class="form-group">

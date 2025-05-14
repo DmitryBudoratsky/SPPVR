@@ -2,9 +2,12 @@
 
 namespace backend\controllers;
 
+use setasign\Fpdi\FpdfTpl;
+use setasign\Fpdi\PdfParser\Type\PdfArray;
 use Yii;
 use common\models\db\Incident;
 use backend\models\IncidentSearch;
+use yii\web\BadRequestHttpException;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
@@ -84,7 +87,7 @@ class IncidentController extends Controller
      */
     public function actionUpdate($id)
     {
-        $model = $this->findModel($id);
+        $model = $this->findModel($id, Incident::STATUS_CREATED);
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
             return $this->redirect(['view', 'id' => $model->incidentId]);
@@ -104,21 +107,43 @@ class IncidentController extends Controller
      */
     public function actionWriteVerdict($id)
     {
-        $model = $this->findModel($id);
-        $verdict = Yii::$app->request->post()['verdict'] ?? null;
+        $model = $this->findModel($id, Incident::STATUS_CREATED);
 
-        if (!empty($verdict)) {
-            $model->verdict = $verdict;
-            $model->status = Incident::STATUS_FINISHED;
-        }
-
-        if ($model->isAttributeChanged('status') && $model->save()) {
+        // TODO verdictAt
+        $model->status = Incident::STATUS_FINISHED;
+        if ($model->load(Yii::$app->request->post()) && $model->save()) {
             return $this->redirect(['view', 'id' => $model->incidentId]);
         }
 
         return $this->render('verdict-form', [
             'model' => $model,
         ]);
+    }
+
+    public function actionDownloadAsFile($id, $extension = 'pdf')
+    {
+        if (!in_array($extension, ['csv', 'xls', 'pdf'])) {
+            throw new BadRequestHttpException("Файл не может быть скачан в этом расширении");
+        }
+
+        $model = $this->findModel($id, Incident::STATUS_FINISHED);
+        $fileName = "Случай №$model->incidentId." . $extension;
+
+        if ($extension == 'pdf') {
+            $pdf = new \kartik\mpdf\Pdf();
+            $pdf->cssInline = 'table {overflow: wrap;} table th {width: 20%;}';
+
+            return $pdf->output(
+                $this->getAsHtmlContent($model),
+                $fileName,
+                'php://output'
+            );
+        }
+
+        $content = $extension == 'xls' ? $this->getAsXlsContent($model) : $this->getAsCsvContent($model);
+
+        file_put_contents('php://output', $content);
+        return \Yii::$app->response->sendFile('php://output', $fileName);
     }
 
     /**
@@ -142,12 +167,76 @@ class IncidentController extends Controller
      * @return Incident the loaded model
      * @throws NotFoundHttpException if the model cannot be found
      */
-    protected function findModel($id)
+    protected function findModel($id, $status = null)
     {
-        if (($model = Incident::findOne($id)) !== null) {
+        /** @var Incident $model */
+        $model = Incident::find()
+            ->andWhere(['incidentId' => $id])
+            ->andFilterWhere(['status' => $status])
+            ->one();
+
+        if ($model !== null) {
             return $model;
         }
 
         throw new NotFoundHttpException('The requested page does not exist.');
+    }
+
+    protected function getAsHtmlContent(Incident $model): string
+    {
+        $incidentName = "Случай №$model->incidentId";
+
+        $content = "<h1>$incidentName</h1>";
+        $content .= $this->renderPartial('_detail', ['model' => $model]);
+        $content .= '© ' . \Yii::$app->name . ' ' . \Yii::$app->formatter->asDate(time(), 'php:Y');
+
+        return $content;
+    }
+
+    private function getAsXlsContent(Incident $model): string
+    {
+        $data = $model->getAsReportArray();
+
+        array_walk($data, function (&$val) {
+            $val = (string)$val;
+
+            $val = preg_replace("/\t/", "\\t", $val);
+            $val = preg_replace("/\r?\n/", "\\n", $val);
+
+            if (str_contains($val, '"')) {
+                $val = '"' . str_replace('"', '""', $val) . '"';
+            }
+        });
+
+        $content = '';
+        foreach ($data as $key => $value) {
+            $row = is_int($key) ? [$value] : [$key, $value];
+
+            $content .= implode("\t", $row) . "\n";;
+        }
+
+        return $content;
+    }
+
+    private function getAsCsvContent(Incident $model): string
+    {
+        $data = $model->getAsReportArray();
+
+        array_walk($data, function (&$val) {
+            $val = (string)$val;
+
+            if (str_contains($val, '"')) {
+                $val = '"' . str_replace('"', '""', $val) . '"';
+            }
+        });
+
+        $content = '';
+        foreach ($data as $key => $value) {
+            $row = is_int($key) ? [$value] : [$key, $value];
+
+            $content .= implode(",", $row) . PHP_EOL;
+        }
+
+        return $content;
     }
 }
