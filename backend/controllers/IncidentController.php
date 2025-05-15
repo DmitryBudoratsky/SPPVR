@@ -15,21 +15,21 @@ use yii\filters\VerbFilter;
 /**
  * IncidentController implements the CRUD actions for Incident model.
  */
-class IncidentController extends Controller
+class IncidentController extends PrivateController
 {
     /**
-     * {@inheritdoc}
+     * @inheritdoc
      */
     public function behaviors()
     {
-        return [
-            'verbs' => [
-                'class' => VerbFilter::className(),
-                'actions' => [
-                    'delete' => ['POST'],
-                ],
+        $behaviors = parent::behaviors();
+        $behaviors['verbs'] = [
+            'class' => VerbFilter::className(),
+            'actions' => [
+                'delete' => ['POST'],
             ],
         ];
+        return $behaviors;
     }
 
     /**
