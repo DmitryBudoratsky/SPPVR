@@ -47,6 +47,12 @@ use common\models\db\Incident;
             ],
 
             [
+                'attribute' => 'verdictAt',
+                'format' => ['date', 'php:d.m.Y H:i'],
+                'visible' => $model->status == Incident::STATUS_FINISHED
+            ],
+
+            [
                 'attribute' => 'createdAt',
                 'format' => ['date', 'php:d.m.Y H:i']
             ],

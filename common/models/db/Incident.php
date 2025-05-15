@@ -39,6 +39,10 @@ class Incident extends BaseIncident
             return false;
         }
 
+        if ($this->isAttributeChanged('status') && $this->status == self::STATUS_FINISHED) {
+            $this->verdictAt = time();
+        }
+
         if (!empty($this->birthDateString)) {
             $formatter = \Yii::$app->formatter;
             $this->birthDate = $formatter->asTimestamp($this->birthDateString);
@@ -75,10 +79,11 @@ class Incident extends BaseIncident
             'address' => 'Адрес',
             'anamnesis' => 'Анамнез',
             'verdict' => 'Вердикт',
+            'verdictAt' => 'Дата и время вердикта',
             'chatId' => 'Chat ID',
             'fileId' => 'File ID',
-            'createdAt' => 'Дата создания',
-            'updatedAt' => 'Дата обновления',
+            'createdAt' => 'Дата и время создания',
+            'updatedAt' => 'Дата и время обновления',
         ];
     }
 
@@ -108,6 +113,7 @@ class Incident extends BaseIncident
             'address' => $this->address,
             'anamnesis' => $this->anamnesis,
             'verdict' => $this->verdict,
+            'verdictAt' => \Yii::$app->formatter->asDate($this->verdictAt, 'php:d.m.Y H:i'),
             'createdAt' => \Yii::$app->formatter->asDate($this->createdAt, 'php:d.m.Y H:i'),
             'updatedAt' => \Yii::$app->formatter->asDate($this->updatedAt, 'php:d.m.Y H:i'),
             'author' => '© ' . \Yii::$app->name . ' ' . \Yii::$app->formatter->asDate(time(), 'php:Y')
