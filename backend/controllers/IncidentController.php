@@ -232,7 +232,6 @@ class IncidentController extends PrivateController
 
     private function getAsCsvContent(Incident $model): string
     {
-        $data = $model->getAsReportArray();
         $data = $model->serialize();
 
         array_walk($data, function (&$val) {
