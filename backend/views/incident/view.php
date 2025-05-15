@@ -45,6 +45,8 @@ $this->params['breadcrumbs'][] = $this->title;
             <?= Html::a('CSV', ['download-as-file', 'id' => $model->incidentId, 'extension' => 'csv'], ['class' => 'dropdown-item']) ?>
             <?= Html::tag('div', null, ['class' => "dropdown-divider"]); ?>
             <?= Html::a('XLS', ['download-as-file', 'id' => $model->incidentId, 'extension' => 'xls'], ['class' => 'dropdown-item']) ?>
+            <?= Html::tag('div', null, ['class' => "dropdown-divider"]); ?>
+            <?= Html::a('JSON', ['download-as-file', 'id' => $model->incidentId, 'extension' => 'json'], ['class' => 'dropdown-item']) ?>
             <?= Html::endTag('div'); ?>
 
             <?= Html::endTag('div'); ?>

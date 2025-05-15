@@ -95,22 +95,22 @@ class Incident extends BaseIncident
      * @return array<int|string>
      * @throws \yii\base\InvalidConfigException
      */
-    public function getAsReportArray(): array
+    public function serialize(): array
     {
         return [
-            "Случай №$this->incidentId",
-            $this->getAttributeLabel('incidentId') => $this->incidentId,
-            $this->getAttributeLabel('status') => self::statusLabels()[$this->status],
-            $this->getAttributeLabel('patientName') => $this->patientName,
-            $this->getAttributeLabel('birthDateString') => $this->birthDateString,
-            $this->getAttributeLabel('policy') => $this->policy,
-            $this->getAttributeLabel('snils') => $this->snils,
-            $this->getAttributeLabel('address') => $this->address,
-            $this->getAttributeLabel('anamnesis') => $this->anamnesis,
-            $this->getAttributeLabel('verdict') => $this->verdict,
-            $this->getAttributeLabel('createdAt') => \Yii::$app->formatter->asDate($this->createdAt, 'php:d.m.Y H:i'),
-            $this->getAttributeLabel('updatedAt') => \Yii::$app->formatter->asDate($this->updatedAt, 'php:d.m.Y H:i'),
-            '© ' . \Yii::$app->name . ' ' . \Yii::$app->formatter->asDate(time(), 'php:Y')
+            'name' => "Случай №$this->incidentId",
+            'incidentId' => $this->incidentId,
+            'status' => self::statusLabels()[$this->status],
+            'patientName' => $this->patientName,
+            'birthDateString' => $this->birthDateString,
+            'policy' => $this->policy,
+            'snils' => $this->snils,
+            'address' => $this->address,
+            'anamnesis' => $this->anamnesis,
+            'verdict' => $this->verdict,
+            'createdAt' => \Yii::$app->formatter->asDate($this->createdAt, 'php:d.m.Y H:i'),
+            'updatedAt' => \Yii::$app->formatter->asDate($this->updatedAt, 'php:d.m.Y H:i'),
+            'author' => '© ' . \Yii::$app->name . ' ' . \Yii::$app->formatter->asDate(time(), 'php:Y')
         ];
     }
 }

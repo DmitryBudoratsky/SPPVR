@@ -122,7 +122,7 @@ class IncidentController extends Controller
 
     public function actionDownloadAsFile($id, $extension = 'pdf')
     {
-        if (!in_array($extension, ['csv', 'xls', 'pdf'])) {
+        if (!in_array($extension, ['csv', 'xls', 'pdf', 'json'])) {
             throw new BadRequestHttpException("Файл не может быть скачан в этом расширении");
         }
 
@@ -140,10 +140,20 @@ class IncidentController extends Controller
             );
         }
 
-        $content = $extension == 'xls' ? $this->getAsXlsContent($model) : $this->getAsCsvContent($model);
+        $content = '';
+        switch ($extension) {
+            case ('xls'):
+                $content = $this->getAsXlsContent($model);
+                break;
+            case ('csv'):
+                $content = $this->getAsCsvContent($model);
+                break;
+            case ('json'):
+                $content = $this->getAsJsonContent($model);
+                break;
+        }
 
-        file_put_contents('php://output', $content);
-        return \Yii::$app->response->sendFile('php://output', $fileName);
+        return \Yii::$app->response->sendContentAsFile($content, $fileName);
     }
 
     /**
@@ -195,7 +205,7 @@ class IncidentController extends Controller
 
     private function getAsXlsContent(Incident $model): string
     {
-        $data = $model->getAsReportArray();
+        $data = $model->serialize();
 
         array_walk($data, function (&$val) {
             $val = (string)$val;
@@ -210,7 +220,9 @@ class IncidentController extends Controller
 
         $content = '';
         foreach ($data as $key => $value) {
-            $row = is_int($key) ? [$value] : [$key, $value];
+            $row = !isset($model->attributeLabels()[$key])
+                ? [$value]
+                : [$model->getAttributeLabel($key), $value];
 
             $content .= implode("\t", $row) . "\n";;
         }
@@ -221,6 +233,7 @@ class IncidentController extends Controller
     private function getAsCsvContent(Incident $model): string
     {
         $data = $model->getAsReportArray();
+        $data = $model->serialize();
 
         array_walk($data, function (&$val) {
             $val = (string)$val;
@@ -232,11 +245,19 @@ class IncidentController extends Controller
 
         $content = '';
         foreach ($data as $key => $value) {
-            $row = is_int($key) ? [$value] : [$key, $value];
+            $row = !isset($model->attributeLabels()[$key])
+                ? [$value]
+                : [$model->getAttributeLabel($key), $value];
 
             $content .= implode(",", $row) . PHP_EOL;
         }
 
         return $content;
+    }
+
+    private function getAsJsonContent(Incident $model)
+    {
+        $data = $model->serialize();
+        return json_encode($data, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
     }
 }
