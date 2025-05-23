@@ -29,8 +29,8 @@ class M220614060341AddUserSession extends Migration
      */
     public function safeDown()
     {
-        $this->dropTable('userSession');
-
         $this->dropPrimaryKey('session_pk', 'userSession', 'id');
+
+        $this->dropTable('userSession');
     }
 }

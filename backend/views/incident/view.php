@@ -57,9 +57,9 @@ $this->params['breadcrumbs'][] = $this->title;
 
     <p>
         <?php if (empty($model->chatId) && $model->status == Incident::STATUS_CREATED): ?>
-            <?= Html::a('Начать чат', ['update', 'id' => $model->incidentId], ['class' => 'btn btn-success btn-lg btn-block']) ?>
+            <?= Html::a('Начать чат', ['start-chat', 'id' => $model->incidentId], ['class' => 'btn btn-success btn-lg btn-block']) ?>
         <?php else: ?>
-            <?= '' ?>
+            <?= $this->render('/chat/_view', ['model' => $model->chat]) ?>
         <?php endif; ?>
     </p>
 </div>

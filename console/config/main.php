@@ -19,6 +19,7 @@ return [
                 'console\migrations\user',
                 'console\migrations\file',
     			'console\migrations\chat',
+                'console\migrations\message',
                 'console\migrations\incident',
             ],
     	],

@@ -2,11 +2,14 @@
 
 namespace backend\controllers;
 
+use common\models\db\Chat;
 use setasign\Fpdi\FpdfTpl;
 use setasign\Fpdi\PdfParser\Type\PdfArray;
 use Yii;
 use common\models\db\Incident;
 use backend\models\IncidentSearch;
+use yii\data\ActiveDataProvider;
+use yii\helpers\Html;
 use yii\web\BadRequestHttpException;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
@@ -55,6 +58,8 @@ class IncidentController extends PrivateController
      */
     public function actionView($id)
     {
+        $model = $this->findModel($id);
+
         return $this->render('view', [
             'model' => $this->findModel($id),
         ]);
@@ -109,7 +114,6 @@ class IncidentController extends PrivateController
     {
         $model = $this->findModel($id, Incident::STATUS_CREATED);
 
-        // TODO verdictAt
         $model->status = Incident::STATUS_FINISHED;
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
             return $this->redirect(['view', 'id' => $model->incidentId]);
@@ -228,6 +232,29 @@ class IncidentController extends PrivateController
         }
 
         return $content;
+    }
+
+    public function actionStartChat($id)
+    {
+        $model = $this->findModel($id);
+
+        if (!empty($model->chatId)) {
+            return $this->redirect(['view', 'id' => $model->incidentId]);
+        }
+
+        $chat = new Chat();
+        if (!$chat->save()) {
+            \Yii::$app->session->setFlash('error', Html::errorSummary($chat));
+            return $this->redirect(['view', 'id' => $model->incidentId]);
+        }
+
+        $model->chatId = $chat->chatId;
+        if (!$model->save()) {
+            \Yii::$app->session->setFlash('error', Html::errorSummary($chat));
+            return $this->redirect(['view', 'id' => $model->incidentId]);
+        }
+
+        return $this->redirect(['view', 'id' => $model->incidentId]);
     }
 
     private function getAsCsvContent(Incident $model): string

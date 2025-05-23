@@ -39,8 +39,10 @@ class Message extends BaseMessage
 
 	const IS_NOT_UPDATED = 0;
 	const IS_UPDATED = 1;
+    
+    const SOCKET_TYPE = 'message';
 
-	/**
+    /**
 	 * @var array
 	 */
 	public $cachedSerializedMessage;
@@ -57,7 +59,7 @@ class Message extends BaseMessage
 			'text' => 'Текст',
 			'isAutoMessage' => 'Автоматическое или нет',
 			'fileId' => 'ID файла',
-			'createdAt' => 'Дата создания',
+			'createdAt' => 'Дата и время отправки',
 			'updatedAt' => 'Дата обновления',
             'status' => 'Статус',
             'isSystem' => 'Системное',

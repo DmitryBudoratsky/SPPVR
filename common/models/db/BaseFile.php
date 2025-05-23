@@ -16,11 +16,10 @@ use Yii;
  * @property int $updatedAt
  *
  * @property AudioFile[] $audioFiles
- * @property Chat[] $chats
  * @property ImageFile[] $imageFiles
+ * @property Incident[] $incidents
  * @property LinkedFile[] $linkedFiles
  * @property Message[] $messages
- * @property User[] $users
  * @property VideoFile[] $videoFiles
  * @property VideoFile[] $videoFiles0
  */
@@ -72,17 +71,17 @@ class BaseFile extends \common\models\db\base\BaseModel
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getChats()
+    public function getImageFiles()
     {
-        return $this->hasMany(Chat::className(), ['avatarFileId' => 'fileId']);
+        return $this->hasMany(ImageFile::className(), ['fileId' => 'fileId']);
     }
 
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getImageFiles()
+    public function getIncidents()
     {
-        return $this->hasMany(ImageFile::className(), ['fileId' => 'fileId']);
+        return $this->hasMany(Incident::className(), ['fileId' => 'fileId']);
     }
 
     /**
@@ -99,14 +98,6 @@ class BaseFile extends \common\models\db\base\BaseModel
     public function getMessages()
     {
         return $this->hasMany(Message::className(), ['fileId' => 'fileId']);
-    }
-
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getUsers()
-    {
-        return $this->hasMany(User::className(), ['avatarFileId' => 'fileId']);
     }
 
     /**

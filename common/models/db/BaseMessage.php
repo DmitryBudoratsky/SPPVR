@@ -9,23 +9,16 @@ use Yii;
  *
  * @property int $messageId
  * @property int $chatId
- * @property int $senderUserId
+ * @property int $userId
+ * @property int $type
  * @property string $text
- * @property int $isAutoMessage
  * @property int $fileId
  * @property int $createdAt
  * @property int $updatedAt
- * @property int $status
- * @property int $isSystem
- * @property int $quotedMessageId
- * @property int $isUpdated
  *
  * @property Chat $chat
  * @property File $file
- * @property BaseMessage $quotedMessage
- * @property BaseMessage[] $baseMessages
- * @property User $senderUser
- * @property UserMessage[] $userMessages
+ * @property User $user
  */
 class BaseMessage extends \common\models\db\base\BaseModel
 {
@@ -43,13 +36,12 @@ class BaseMessage extends \common\models\db\base\BaseModel
     public function rules()
     {
         return [
-            [['chatId'], 'required'],
-            [['chatId', 'senderUserId', 'isAutoMessage', 'fileId', 'createdAt', 'updatedAt', 'status', 'isSystem', 'quotedMessageId', 'isUpdated'], 'integer'],
+            [['chatId', 'type'], 'required'],
+            [['chatId', 'userId', 'type', 'fileId', 'createdAt', 'updatedAt'], 'integer'],
             [['text'], 'string'],
             [['chatId'], 'exist', 'skipOnError' => true, 'targetClass' => Chat::className(), 'targetAttribute' => ['chatId' => 'chatId']],
             [['fileId'], 'exist', 'skipOnError' => true, 'targetClass' => File::className(), 'targetAttribute' => ['fileId' => 'fileId']],
-            [['quotedMessageId'], 'exist', 'skipOnError' => true, 'targetClass' => BaseMessage::className(), 'targetAttribute' => ['quotedMessageId' => 'messageId']],
-            [['senderUserId'], 'exist', 'skipOnError' => true, 'targetClass' => User::className(), 'targetAttribute' => ['senderUserId' => 'userId']],
+            [['userId'], 'exist', 'skipOnError' => true, 'targetClass' => User::className(), 'targetAttribute' => ['userId' => 'userId']],
         ];
     }
 
@@ -61,16 +53,12 @@ class BaseMessage extends \common\models\db\base\BaseModel
         return [
             'messageId' => 'Message ID',
             'chatId' => 'Chat ID',
-            'senderUserId' => 'Sender User ID',
+            'userId' => 'User ID',
+            'type' => 'Type',
             'text' => 'Text',
-            'isAutoMessage' => 'Is Auto Message',
             'fileId' => 'File ID',
             'createdAt' => 'Created At',
             'updatedAt' => 'Updated At',
-            'status' => 'Status',
-            'isSystem' => 'Is System',
-            'quotedMessageId' => 'Quoted Message ID',
-            'isUpdated' => 'Is Updated',
         ];
     }
 
@@ -93,32 +81,8 @@ class BaseMessage extends \common\models\db\base\BaseModel
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getQuotedMessage()
+    public function getUser()
     {
-        return $this->hasOne(BaseMessage::className(), ['messageId' => 'quotedMessageId']);
-    }
-
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getBaseMessages()
-    {
-        return $this->hasMany(BaseMessage::className(), ['quotedMessageId' => 'messageId']);
-    }
-
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getSenderUser()
-    {
-        return $this->hasOne(User::className(), ['userId' => 'senderUserId']);
-    }
-
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getUserMessages()
-    {
-        return $this->hasMany(UserMessage::className(), ['messageId' => 'messageId']);
+        return $this->hasOne(User::className(), ['userId' => 'userId']);
     }
 }

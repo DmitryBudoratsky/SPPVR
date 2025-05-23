@@ -19,9 +19,7 @@ use Yii;
  * @property int $updatedAt
  *
  * @property AccessToken[] $accessTokens
- * @property ChatMember[] $chatMembers
  * @property Message[] $messages
- * @property UserMessage[] $userMessages
  */
 class BaseUser extends \common\models\db\base\BaseModel
 {
@@ -75,24 +73,8 @@ class BaseUser extends \common\models\db\base\BaseModel
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getChatMembers()
-    {
-        return $this->hasMany(ChatMember::className(), ['userId' => 'userId']);
-    }
-
-    /**
-     * @return \yii\db\ActiveQuery
-     */
     public function getMessages()
     {
-        return $this->hasMany(Message::className(), ['senderUserId' => 'userId']);
-    }
-
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getUserMessages()
-    {
-        return $this->hasMany(UserMessage::className(), ['userId' => 'userId']);
+        return $this->hasMany(Message::className(), ['userId' => 'userId']);
     }
 }

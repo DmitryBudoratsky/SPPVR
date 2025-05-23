@@ -4,29 +4,25 @@ namespace console\migrations\chat;
 
 use yii\db\Migration;
 
-/**
- * Handles the creation of table `chat`.
- */
-class m170214_102010_create_chat_table extends Migration
+class M150523082728CreateTable extends Migration
 {
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function safeUp()
     {
         $this->createTable('chat', [
             'chatId' => $this->primaryKey(),
-            'isHidden' => $this->integer(),
-        	'createdAt' => $this->bigInteger(),
-        	'updatedAt' => $this->bigInteger()
+            'createdAt' => $this->bigInteger(),
+            'updatedAt' => $this->bigInteger()
         ]);
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function safeDown()
-    {   	
+    {
         $this->dropTable('chat');
     }
 }
