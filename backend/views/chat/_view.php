@@ -26,110 +26,132 @@ if (!empty($user)) {
 if (!isset($message)) {
     $message = new Message();
 }
+
+$messagePageSize = is_null(\Yii::$app->request->get('per-page'))
+    ? 10
+    : \Yii::$app->request->get('per-page');
+$messagePage = is_null(\Yii::$app->request->get('page'))
+    ? $model->getMessages()->count() / $messagePageSize
+    : (int)\Yii::$app->request->get('page') - 1;
 ?>
-<div class="chat-view">
+    <div class="chat-view">
+        <h1>Чат</h1>
 
-    <h1>Чат</h1>
+        <div class="card border-default">
+            <?= Html::tag('div', Html::tag('h5', 'Список сообщений <i class="fa fa-comments"></i>', ['class' => 'card-header'])); ?>
 
-    <div class="card border-default">
-        <?= Html::tag('div', Html::tag('h5', 'Список сообщений <i class="fa fa-comments"></i>', ['class' => 'card-header'])); ?>
-
-        <div class="card-body">
-            <?= FancyboxHelper::renderFancybox(); ?>
-            <?php Pjax::begin(['id' => 'message-grid-view']); ?>
-            <?= GridView::widget([
-                'dataProvider' => new ActiveDataProvider([
-                    'query' => $model->getMessages()
-                        ->orderBy(['messageId' => SORT_DESC]),
-                    'sort' => false,
-                    'pagination' => [
-                        'pageSize' => 10,
-                    ],
-                ]),
-                'columns' => [
-                    [
-                        'label' => 'Имя отправителя',
-                        'format' => 'html',
-                        'value' => static function (Message $model) {
-                            if (!empty($model->userId)) {
-                                return Html::a($model->user->name . ' ' . $model->user->lastname, ['user/view', 'id' => $model->userId]);
-                            }
-
-                            return null;
-                        }
-                    ],
-
-                    [
-                        'label' => 'Сообщение',
-                        'format' => 'raw',
-                        'options' => ['class' => 'col-sm-8'],
-                        'value' => static function (/** @var Message $model */ $model) {
-                            /*if (!empty($model->file)) {
-                                switch ($model->getMessageType()) {
-                                    case Message::MESSAGE_TYPE_IMAGE:
-                                    {
-                                        return Html::a(Html::img($model->file->getPreviewImageUrl(), ['class' => 'previewImage']), $model->file->getAbsoluteFileUrl(), ['rel' => 'fancybox']);
-                                    }
-                                    case Message::MESSAGE_TYPE_DOCUMENT:
-                                    {
-                                        $fileName = $model->file->originalName;
-                                        return '<a href="#" class="download-link" data-path="' . str_replace('uploads', '', $model->file->url) . '" data-file-name="' . $fileName . '">' . $fileName . '</a>';
-                                    }
-                                    case Message::MESSAGE_TYPE_VIDEO:
-                                    {
-                                        if (!empty($model->file) && $model->file->type == 'video') {
-                                            $url = $model->file->getAbsoluteFileUrl();
-                                            return '<video width="280" height="156" controls><source src="' . $url . '"></video><br>';
-                                        }
-                                    }
+            <div class="card-body">
+                <?= FancyboxHelper::renderFancybox(); ?>
+                <?php Pjax::begin(['id' => 'message-grid-view']); ?>
+                <?= GridView::widget([
+                    'dataProvider' => new ActiveDataProvider([
+                        'query' => $model->getMessages()
+                            ->orderBy(['createdAt' => SORT_ASC]),
+                        'sort' => false,
+                        'pagination' => [
+                            'pageSize' => $messagePageSize,
+                            'page' => $messagePage
+                        ],
+                    ]),
+                    'columns' => [
+                        [
+                            'label' => 'Имя отправителя',
+                            'format' => 'html',
+                            'value' => static function (Message $model) {
+                                if (!empty($model->userId)) {
+                                    return Html::a($model->user->name . ' ' . $model->user->lastname, ['user/view', 'id' => $model->userId]);
                                 }
-                            }*/
-                            return $model->text;
-                        }
+
+                                if ($model->type == Message::TYPE_AI) {
+                                    return Message::AI_NAME;
+                                }
+
+                                return null;
+                            }
+                        ],
+
+                        [
+                            'label' => 'Сообщение',
+                            'format' => 'html',
+                            'options' => ['class' => 'col-sm-8'],
+                            'value' => static function (/** @var Message $model */ $model) {
+                                $result = $model->text;
+
+                                if (!empty($model->text) && !empty($model->fileId)) {
+                                    $result .= '<hr>';
+                                }
+
+                                if (!empty($model->file)) {
+                                    /*switch ($model->getMessageType()) {
+                                        case Message::MESSAGE_TYPE_IMAGE:
+                                        {
+                                            $result Html::a(Html::img($model->file->getPreviewImageUrl(), ['class' => 'previewImage']), $model->file->getAbsoluteFileUrl(), ['rel' => 'fancybox']);
+                                        }
+                                        case Message::MESSAGE_TYPE_DOCUMENT:
+                                        {
+                                            $fileName = $model->file->originalName;
+                                            return '<a href="#" class="download-link" data-path="' . str_replace('uploads', '', $model->file->url) . '" data-file-name="' . $fileName . '">' . $fileName . '</a>';
+                                        }
+                                        case Message::MESSAGE_TYPE_VIDEO:
+                                        {
+                                            if (!empty($model->file) && $model->file->type == 'video') {
+                                                $url = $model->file->getAbsoluteFileUrl();
+                                                return '<video width="280" height="156" controls><source src="' . $url . '"></video><br>';
+                                            }
+                                        }
+                                    }*/
+                                }
+
+                                return $result;
+                            }
+                        ],
+
+                        [
+                            'attribute' => 'createdAt',
+                            'format' => ['date', 'php:d.m.Y H:i:s']
+                        ],
                     ],
-
-                    'createdAt:datetime',
-                ],
-            ]); ?>
-            <?php Pjax::end(); ?>
-        </div>
-
-
-        <?= Html::tag('div', Html::tag('h5', 'Отправить сообщение в чат <i class="fa fa-comment"></i>', ['class' => 'card-header card-footer'])); ?>
-        <div class="card-body">
-            <?php $form = ActiveForm::begin(['id' => 'form-send-message']); ?>
-            <?= $form->errorSummary($message); ?>
-
-            <?= $form->field($message, 'file')->widget(FileInput::className(), [
-                'language' => 'ru',
-                'options' => [
-                    'multiple' => false,
-                ],
-                'pluginOptions' => [
-                    'uploadAsync' => false,
-                    'showPreview' => false,
-                    'showCaption' => true,
-                    'showRemove' => false,
-                    'showUpload' => false,
-
-                    'browseClass' => 'btn btn-primary',
-                    'browseLabel' => '',
-                    'browseIcon' => '<i class="fa fa-paperclip" aria-hidden="true"></i>',
-                ]
-            ])->label(false); ?>
-
-            <?= $form->field($message, 'text')->textInput(['placeholder' => 'Напишите сообщение...'])->label(false); ?>
-
-            <div class="btn-group mr-2 float-right">
-                <?= Html::submitButton('Отправить <i class="fa fa-paper-plane" aria-hidden="true"></i>', ['class' => 'btn btn-success']) ?>
-                <?= Html::resetButton('Отмена <i class="fa fa-ban" aria-hidden="true"></i>', ['class' => 'btn btn-secondary btn-default']) ?>
+                ]); ?>
+                <?php Pjax::end(); ?>
             </div>
 
-            <?php ActiveForm::end(); ?>
-        </div>
-    </div>
+            <?= Html::tag('div', Html::tag('h5', 'Отправить сообщение в чат <i class="fa fa-comment"></i>', ['class' => 'card-header card-footer'])); ?>
+            <div class="card-body">
+                <?php $form = ActiveForm::begin(['id' => 'form-send-message', 'action' => ['message/send']]); ?>
+                <?= $form->errorSummary($message); ?>
 
-</div>
+                <?= $form->field($message, 'file')->widget(FileInput::className(), [
+                    'language' => 'ru',
+                    'options' => [
+                        'multiple' => false,
+                    ],
+                    'pluginOptions' => [
+                        'uploadAsync' => false,
+                        'showPreview' => false,
+                        'showCaption' => true,
+                        'showRemove' => false,
+                        'showUpload' => false,
+
+                        'browseClass' => 'btn btn-primary',
+                        'browseLabel' => '',
+                        'browseIcon' => '<i class="fa fa-paperclip" aria-hidden="true"></i>',
+                    ]
+                ])->label(false); ?>
+
+                <?= $form->field($message, 'text')->textInput(['placeholder' => 'Напишите сообщение...'])->label(false); ?>
+
+                <?= $form->field($message, 'chatId')->hiddenInput(['value' => $model->chatId])->label(false) ?>
+
+                <div class="btn-group mr-2 float-right">
+                    <?= Html::submitButton('Отправить <i class="fa fa-paper-plane" aria-hidden="true"></i>', ['class' => 'btn btn-success']) ?>
+                    <?= Html::resetButton('Отмена <i class="fa fa-ban" aria-hidden="true"></i>', ['class' => 'btn btn-secondary btn-default']) ?>
+                </div>
+
+                <?php ActiveForm::end(); ?>
+            </div>
+        </div>
+
+    </div>
 
 <?php
 $downloadFileUrl = Url::to(['chat/download-file']);

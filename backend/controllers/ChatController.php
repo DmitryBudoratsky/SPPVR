@@ -37,8 +37,6 @@ class ChatController extends PrivateController
         $behaviors['verbs'] = [
                 'class' => VerbFilter::className(),
                 'actions' => [
-                    'delete' => ['POST'],
-                    'block-member-until' => ['POST'],
                 ],
             ];
 		return $behaviors;
