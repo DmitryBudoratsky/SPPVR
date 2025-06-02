@@ -32,6 +32,13 @@ use common\models\db\Incident;
             'patientName',
 
             [
+                'attribute' => 'sex',
+                'value' => function (Incident $model) {
+                    return Incident::sexLabels()[$model->sex];
+                }
+            ],
+
+            [
                 'attribute' => 'birthDate',
                 'format' => ['date', 'php:d.m.Y']
             ],

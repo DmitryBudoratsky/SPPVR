@@ -54,7 +54,8 @@
         "thamtech/yii2-ratelimiter-advanced": "*",
         "kornrunner/blurhash": "^1.2",
         "ext-gd": "*",
-        "kreait/firebase-php": "5.26.5"
+        "kreait/firebase-php": "5.26.5",
+        "generative/genapi-sdk-php": "^1.0"
     },
     "require-dev": {
         "yiisoft/yii2-debug": "~2.0.14",

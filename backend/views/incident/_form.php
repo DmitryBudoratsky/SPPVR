@@ -2,6 +2,8 @@
 
 use backend\compenents\helpers\PolisHelper;
 use backend\compenents\helpers\SnilsHelper;
+use common\models\db\Incident;
+use common\models\db\User;
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
 
@@ -17,6 +19,8 @@ SnilsHelper::registerJs($this);
     <?php $form = ActiveForm::begin(); ?>
 
     <?= $form->field($model, 'patientName')->textInput(['maxlength' => true]) ?>
+
+    <?= $form->field($model, 'sex')->radioList(Incident::sexLabels(), ['inline'=>true])?>
 
     <?= $form->field($model, 'birthDateString')->widget(\kartik\date\DatePicker::class, [
         'readonly' => true,

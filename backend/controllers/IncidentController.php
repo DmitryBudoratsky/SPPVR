@@ -58,8 +58,6 @@ class IncidentController extends PrivateController
      */
     public function actionView($id)
     {
-        $model = $this->findModel($id);
-
         return $this->render('view', [
             'model' => $this->findModel($id),
         ]);
@@ -249,6 +247,10 @@ class IncidentController extends PrivateController
         }
 
         $model->chatId = $chat->chatId;
+        if (!$chat->sendToNeuroStartMessage($model)) {
+            \Yii::$app->session->setFlash('error', 'Не удалось создать чат');
+            return $this->redirect(['view', 'id' => $model->incidentId]);
+        }
         if (!$model->save()) {
             \Yii::$app->session->setFlash('error', Html::errorSummary($chat));
             return $this->redirect(['view', 'id' => $model->incidentId]);

@@ -16,6 +16,7 @@ class M250510191400CreateTable extends Migration
             'status' => $this->tinyInteger()->notNull()->defaultValue(0),
             'patientName' => $this->string(),
             'birthDate' => $this->bigInteger(),
+            'sex' => $this->tinyInteger()->notNull()->defaultValue(0),
             'policy' => $this->string(16),
             'snils' => $this->string(14),
             'address' => $this->string(),
@@ -35,6 +36,13 @@ class M250510191400CreateTable extends Migration
             'SET NULL'
         );
 
+        $this->createIndex(
+            'incident-chatId-unique',
+            'incident',
+            'chatId',
+            true
+        );
+
         $this->addForeignKey(
             'fk-incident-file-1',
             'incident',
@@ -52,6 +60,11 @@ class M250510191400CreateTable extends Migration
     {
         $this->dropForeignKey(
             'fk-incident-chat-1',
+            'incident'
+        );
+
+        $this->dropIndex(
+            'incident-chatId-unique',
             'incident'
         );
 

@@ -72,7 +72,7 @@ $messagePage = is_null(\Yii::$app->request->get('page'))
 
                         [
                             'label' => 'Сообщение',
-                            'format' => 'html',
+                            'format' => 'raw',
                             'options' => ['class' => 'col-sm-8'],
                             'value' => static function (/** @var Message $model */ $model) {
                                 $result = $model->text;

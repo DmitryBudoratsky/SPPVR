@@ -46,6 +46,7 @@ class BaseIncident extends \common\models\db\base\BaseModel
             [['patientName', 'address'], 'string', 'max' => 255],
             [['policy'], 'string', 'max' => 16],
             [['snils'], 'string', 'max' => 14],
+            [['chatId'], 'unique'],
             [['chatId'], 'exist', 'skipOnError' => true, 'targetClass' => Chat::className(), 'targetAttribute' => ['chatId' => 'chatId']],
             [['fileId'], 'exist', 'skipOnError' => true, 'targetClass' => File::className(), 'targetAttribute' => ['fileId' => 'fileId']],
         ];

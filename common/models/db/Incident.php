@@ -10,6 +10,10 @@ class Incident extends BaseIncident
     const STATUS_FINISHED = 1;
     const STATUS_CREATED_LABEL = 'Создан';
     const STATUS_FINISHED_LABEL = 'Вынесен вердикт';
+    const SEX_MAN = 0;
+    const SEX_WOMAN = 1;
+    const SEX_MAN_LABEL = 'Мужской';
+    const SEX_WOMAN_LABEL = 'Женский';
 
     public $birthDateString;
 
@@ -23,6 +27,14 @@ class Incident extends BaseIncident
             }],
             [['birthDateString'], 'date', 'format' => 'php:d.m.Y'],
         ]);
+    }
+
+    public static function sexLabels()
+    {
+        return [
+            self::SEX_MAN => self::SEX_MAN_LABEL,
+            self::SEX_WOMAN => self::SEX_WOMAN_LABEL
+        ];
     }
 
     /**
@@ -70,6 +82,7 @@ class Incident extends BaseIncident
     {
         return [
             'incidentId' => 'ID Случая',
+            'sex' => 'Пол',
             'status' => 'Статус',
             'patientName' => 'ФИО пациента',
             'birthDate' => 'Дата рождения',
@@ -107,6 +120,7 @@ class Incident extends BaseIncident
             'incidentId' => $this->incidentId,
             'status' => self::statusLabels()[$this->status],
             'patientName' => $this->patientName,
+            'sex' => self::sexLabels()[$this->sex],
             'birthDateString' => $this->birthDateString,
             'policy' => $this->policy,
             'snils' => $this->snils,

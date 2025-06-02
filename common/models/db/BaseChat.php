@@ -11,7 +11,7 @@ use Yii;
  * @property int $createdAt
  * @property int $updatedAt
  *
- * @property Incident[] $incidents
+ * @property Incident $incident
  * @property Message[] $messages
  */
 class BaseChat extends \common\models\db\base\BaseModel
@@ -49,9 +49,9 @@ class BaseChat extends \common\models\db\base\BaseModel
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getIncidents()
+    public function getIncident()
     {
-        return $this->hasMany(Incident::className(), ['chatId' => 'chatId']);
+        return $this->hasOne(Incident::className(), ['chatId' => 'chatId']);
     }
 
     /**
