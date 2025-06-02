@@ -14,6 +14,7 @@ use yii\widgets\Pjax;
 /* @var $this yii\web\View */
 /* @var $model common\models\db\Chat */
 /* @var $message Message */
+/* @var $hideForm bool */
 
 \backend\assets\common\SocketNotificationAsset::register($this);
 
@@ -66,6 +67,10 @@ $messagePage = is_null(\Yii::$app->request->get('page'))
                                     return Message::AI_NAME;
                                 }
 
+                                if ($model->type == Message::TYPE_START) {
+                                    return 'Стартовое сообщение';
+                                }
+
                                 return null;
                             }
                         ],
@@ -115,40 +120,43 @@ $messagePage = is_null(\Yii::$app->request->get('page'))
                 <?php Pjax::end(); ?>
             </div>
 
-            <?= Html::tag('div', Html::tag('h5', 'Отправить сообщение в чат <i class="fa fa-comment"></i>', ['class' => 'card-header card-footer'])); ?>
-            <div class="card-body">
-                <?php $form = ActiveForm::begin(['id' => 'form-send-message', 'action' => ['message/send']]); ?>
-                <?= $form->errorSummary($message); ?>
+            <?php if (!$hideForm) { ?>
+                <?= Html::tag('div', Html::tag('h5', 'Отправить сообщение в чат <i class="fa fa-comment"></i>', ['class' => 'card-header card-footer'])); ?>
+                <div class="card-body">
+                    <?php $form = ActiveForm::begin(['id' => 'form-send-message', 'action' => ['message/send']]); ?>
+                    <?= $form->errorSummary($message); ?>
 
-                <?= $form->field($message, 'file')->widget(FileInput::className(), [
-                    'language' => 'ru',
-                    'options' => [
-                        'multiple' => false,
-                    ],
-                    'pluginOptions' => [
-                        'uploadAsync' => false,
-                        'showPreview' => false,
-                        'showCaption' => true,
-                        'showRemove' => false,
-                        'showUpload' => false,
+                    <?= $form->field($message, 'file')->widget(FileInput::className(), [
+                        'language' => 'ru',
+                        'options' => [
+                            'multiple' => false,
+                        ],
+                        'pluginOptions' => [
+                            'uploadAsync' => false,
+                            'showPreview' => false,
+                            'showCaption' => true,
+                            'showRemove' => false,
+                            'showUpload' => false,
 
-                        'browseClass' => 'btn btn-primary',
-                        'browseLabel' => '',
-                        'browseIcon' => '<i class="fa fa-paperclip" aria-hidden="true"></i>',
-                    ]
-                ])->label(false); ?>
+                            'browseClass' => 'btn btn-primary',
+                            'browseLabel' => '',
+                            'browseIcon' => '<i class="fa fa-paperclip" aria-hidden="true"></i>',
+                        ]
+                    ])->label(false); ?>
 
-                <?= $form->field($message, 'text')->textInput(['placeholder' => 'Напишите сообщение...'])->label(false); ?>
+                    <?= $form->field($message, 'text')->textInput(['placeholder' => 'Напишите сообщение...'])->label(false); ?>
 
-                <?= $form->field($message, 'chatId')->hiddenInput(['value' => $model->chatId])->label(false) ?>
+                    <?= $form->field($message, 'chatId')->hiddenInput(['value' => $model->chatId])->label(false) ?>
 
-                <div class="btn-group mr-2 float-right">
-                    <?= Html::submitButton('Отправить <i class="fa fa-paper-plane" aria-hidden="true"></i>', ['class' => 'btn btn-success']) ?>
-                    <?= Html::resetButton('Отмена <i class="fa fa-ban" aria-hidden="true"></i>', ['class' => 'btn btn-secondary btn-default']) ?>
+                    <div class="btn-group mr-2 float-right">
+                        <?= Html::submitButton('Отправить <i class="fa fa-paper-plane" aria-hidden="true"></i>', ['class' => 'btn btn-success']) ?>
+                        <?= Html::resetButton('Отмена <i class="fa fa-ban" aria-hidden="true"></i>', ['class' => 'btn btn-secondary btn-default']) ?>
+                    </div>
+
+                    <?php ActiveForm::end(); ?>
                 </div>
+            <?php } ?>
 
-                <?php ActiveForm::end(); ?>
-            </div>
         </div>
 
     </div>

@@ -21,6 +21,7 @@ use Yii;
  * @property int $updatedAt
  * @property string $verdict
  * @property int $verdictAt
+ * @property int $sex
  *
  * @property Chat $chat
  * @property File $file
@@ -41,7 +42,7 @@ class BaseIncident extends \common\models\db\base\BaseModel
     public function rules()
     {
         return [
-            [['status', 'birthDate', 'chatId', 'fileId', 'createdAt', 'updatedAt', 'verdictAt'], 'integer'],
+            [['status', 'birthDate', 'chatId', 'fileId', 'createdAt', 'updatedAt', 'verdictAt', 'sex'], 'integer'],
             [['anamnesis', 'verdict'], 'string'],
             [['patientName', 'address'], 'string', 'max' => 255],
             [['policy'], 'string', 'max' => 16],
@@ -72,6 +73,7 @@ class BaseIncident extends \common\models\db\base\BaseModel
             'updatedAt' => 'Updated At',
             'verdict' => 'Verdict',
             'verdictAt' => 'Verdict At',
+            'sex' => 'Sex',
         ];
     }
 

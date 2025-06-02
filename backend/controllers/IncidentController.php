@@ -247,7 +247,7 @@ class IncidentController extends PrivateController
         }
 
         $model->chatId = $chat->chatId;
-        if (!$chat->sendToNeuroStartMessage($model)) {
+        if (!$chat->sendStartMessage($model)) {
             \Yii::$app->session->setFlash('error', 'Не удалось создать чат');
             return $this->redirect(['view', 'id' => $model->incidentId]);
         }

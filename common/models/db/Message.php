@@ -11,4 +11,35 @@ class Message extends BaseMessage
     const SOCKET_TYPE = 'message';
 
     const AI_NAME = 'Нейро';
+
+    /**
+     * {@inheritdoc}
+     */
+    public function attributeLabels()
+    {
+        return [
+            'createdAt' => 'Дата и время отправки',
+        ];
+    }
+
+    public function afterSave($insert, $changedAttributes)
+    {
+        parent::afterSave($insert, $changedAttributes);
+
+        if ($insert && in_array($this->type, [self::TYPE_START, self::TYPE_USER])) {
+            $this->sendToNeuro();
+        }
+    }
+
+    public function sendToNeuro()
+    {
+        $response = $this->chat->sendToNeuro();
+        if (is_null($response)) {
+            return false;
+        }
+
+        $message = new Message(['type' => Message::TYPE_AI, 'text' => $response, 'chatId' => $this->chatId]);
+
+        return $message->save();
+    }
 }
