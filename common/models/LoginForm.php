@@ -1,4 +1,5 @@
 <?php
+
 namespace common\models;
 
 use Yii;
@@ -25,8 +26,8 @@ class LoginForm extends Model
         return [
             // email and password are both required
             [['email', 'password'], 'required'],
-			// the email attribute should be a valid email address
-			['email', 'email'],
+            // the email attribute should be a valid email address
+            ['email', 'email'],
             // rememberMe must be a boolean value
             ['rememberMe', 'boolean'],
             // password is validated by validatePassword()
@@ -67,24 +68,26 @@ class LoginForm extends Model
      */
     public function login()
     {
-    	if (!$this->validate()) {
-    		return false;
-    	}
-    	
-    	/**
-    	 * @var User $user
-    	 */
-    	$user = $this->getUser();
-    	
-    	if (!$user->isUserActive()) {
-    		return false;
-    	}
-    	
-    	if ($user->isUserAdmin()) {
-    		return Yii::$app->user->login($this->getUser(), $this->rememberMe ? 3600 * 24 * 30 : 0);
-    	}
-  		
-    	return false;
+        if (!$this->validate()) {
+            return false;
+        }
+
+        /**
+         * @var User $user
+         */
+        $user = $this->getUser();
+
+        if (!$user->isUserActive()) {
+            $this->addError('', 'Пользователь не активен');
+            return false;
+        }
+
+        if (!$user->isUserAdmin()) {
+            $this->addError('', 'Вы не имеете доступа в панель администратора');
+            return false;
+        }
+
+        return Yii::$app->user->login($this->getUser(), $this->rememberMe ? 3600 * 24 * 30 : 0);
     }
 
     /**
