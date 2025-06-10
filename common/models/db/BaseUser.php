@@ -17,6 +17,7 @@ use Yii;
  * @property int $dateOfBirth
  * @property int $createdAt
  * @property int $updatedAt
+ * @property string $surname
  *
  * @property AccessToken[] $accessTokens
  * @property Message[] $messages
@@ -38,7 +39,7 @@ class BaseUser extends \common\models\db\base\BaseModel
     {
         return [
             [['status', 'role', 'dateOfBirth', 'createdAt', 'updatedAt'], 'integer'],
-            [['name', 'lastname', 'passwordHash', 'email'], 'string', 'max' => 255],
+            [['name', 'lastname', 'passwordHash', 'email', 'surname'], 'string', 'max' => 255],
             [['email'], 'unique'],
         ];
     }
@@ -59,6 +60,7 @@ class BaseUser extends \common\models\db\base\BaseModel
             'dateOfBirth' => 'Date Of Birth',
             'createdAt' => 'Created At',
             'updatedAt' => 'Updated At',
+            'surname' => 'Surname',
         ];
     }
 

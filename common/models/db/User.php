@@ -75,7 +75,7 @@ class User extends BaseUser implements IdentityInterface
                 'tooShort' => 'Значение "{attribute}" должно содержать не менее {min} символов',
             ],
             ['password', PasswordValidator::className()],
-            [['email', 'password', 'name', 'lastname'], 'required', 'on' => static::SCENARIO_CREATE_BY_ADMIN_PANEL],
+            [['email', 'password', 'name', 'lastname', 'surname'], 'required', 'on' => static::SCENARIO_CREATE_BY_ADMIN_PANEL],
         ]);
     }
 
@@ -88,6 +88,7 @@ class User extends BaseUser implements IdentityInterface
             'userId' => 'ID',
             'name' => 'Имя',
             'lastname' => 'Фамилия',
+            'surname' => 'Отчество',
             'passwordHash' => 'Хэш пароля',
             'login' => 'Логин',
             'status' => 'Статус',

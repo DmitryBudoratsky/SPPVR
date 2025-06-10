@@ -21,6 +21,8 @@ use kartik\select2\Select2;
 
     <?= $form->field($model, 'lastname')->textInput(['maxlength' => true]) ?>
 
+    <?= $form->field($model, 'surname')->textInput(['maxlength' => true]) ?>
+
 	<?= $form->field($model, 'status')->widget(Select2::classname(), [
 				'data' => User::statusLabels(),
 				'options' => [

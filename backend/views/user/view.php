@@ -63,6 +63,7 @@ $this->params['breadcrumbs'][] = $this->title;
             'userId',
             'name',
             'lastname',
+            'surname',
 
             [
                 'attribute' => 'status',
