@@ -46,7 +46,7 @@ class User extends BaseUser implements IdentityInterface
     const STATUS_BLOCKED_LABEL = "Заблокированный";
     const STATUS_ACTIVE_LABEL = "Активный";
 
-    const ROLE_DEFAULT_USER_LABEL = "Обычный";
+    const ROLE_DEFAULT_USER_LABEL = "Врач";
     const ROLE_ADMIN_LABEL = "Администратор";
 
     const AVATAR_FOLDER = "avatars";

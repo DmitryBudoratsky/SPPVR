@@ -1,6 +1,8 @@
 <?php
+
 namespace backend\controllers;
 
+use common\models\db\User;
 use Yii;
 use yii\web\Controller;
 use yii\filters\VerbFilter;
@@ -60,17 +62,21 @@ class SiteController extends Controller
     /**
      * Login action.
      *
-     * @return string
+     * @return \yii\web\Response|string
      */
     public function actionLogin()
-    {	
+    {
         if (!Yii::$app->user->isGuest) {
             return $this->goHome();
         }
 
         $model = new LoginForm();
         if ($model->load(Yii::$app->request->post()) && $model->login()) {
-            return $this->goBack();
+            if (User::getUser()->role == User::ROLE_ADMIN) {
+                return $this->goBack();
+            } else {
+                return $this->redirect(['incident/index']);
+            }
         } else {
             return $this->render('login', [
                 'model' => $model,

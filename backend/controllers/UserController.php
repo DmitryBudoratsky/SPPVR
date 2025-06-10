@@ -19,20 +19,30 @@ use yii\web\UploadedFile;
  */
 class UserController extends PrivateController
 {
-	
+
     /**
      * @inheritdoc
      */
     public function behaviors()
     {
-		$behaviors = parent::behaviors();
+        $behaviors = parent::behaviors();
+
         $behaviors['verbs'] = [
-                'class' => VerbFilter::className(),
-                'actions' => [
-                    'delete' => ['POST'],
-                ],
-            ];
-		return $behaviors;
+            'class' => VerbFilter::className(),
+            'actions' => [
+                'delete' => ['POST'],
+            ],
+        ];
+        $behaviors['access']['rules'] = [
+            [
+                'allow' => true,
+                'matchCallback' => function () {
+                    return (User::getUser()->role ?? null) == User::ROLE_ADMIN;
+                }
+            ]
+        ];
+
+        return $behaviors;
     }
 
     /**

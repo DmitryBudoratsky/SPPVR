@@ -6,6 +6,7 @@
 /* @var bool $isFullsize */
 
 use backend\assets\AppAsset;
+use common\models\db\User;
 use yii\helpers\Html;
 use yii\bootstrap4\Nav;
 use yii\bootstrap4\NavBar;
@@ -104,9 +105,9 @@ $isFullsize = isset($isFullsize) ? $isFullsize : false;
                 ['label' => 'Api Debug Panel', 'url' => \Yii::$app->frontendUrlManager->baseUrl . '/debug'],
             ];
 
-            $menuItems[] = ['label' => 'Dev', 'items' => $devItems];
-
-            $menuItems[] = ['label' => 'Пользователи', 'url' => ['user/index']];
+            if (User::getUser()->role == User::ROLE_ADMIN) {
+                $menuItems[] = ['label' => 'Пользователи', 'url' => ['user/index']];
+            }
 
             $menuItems[] = ['label' => 'Случаи', 'url' => ['incident/index']];
 
