@@ -78,12 +78,12 @@ class LoginForm extends Model
         $user = $this->getUser();
 
         if (!$user->isUserActive()) {
-            $this->addError('', 'Пользователь не активен');
+            $this->addError('email', 'Пользователь не активен');
             return false;
         }
 
-        if (!$user->isUserAdmin()) {
-            $this->addError('', 'Вы не имеете доступа в панель администратора');
+        if (!$user->isUserAdminOrDoctor()) {
+            $this->addError('email', 'Вы не имеете доступа в панель администратора');
             return false;
         }
 

@@ -573,9 +573,9 @@ class User extends BaseUser implements IdentityInterface
     /**
      * Проверка, что пользователь - администратор
      */
-    public function isUserAdmin()
+    public function isUserAdminOrDoctor()
     {
-        return ($this->role == self::ROLE_ADMIN);
+        return in_array($this->role, [self::ROLE_ADMIN, self::ROLE_DEFAULT_USER]);
     }
 
     /**
