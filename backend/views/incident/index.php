@@ -100,6 +100,11 @@ $this->params['breadcrumbs'][] = $this->title;
 
             [
                 'class' => 'yii\grid\ActionColumn',
+                'visibleButtons' => [
+                    'update' => function ($model) {
+                        return $model->status != Incident::STATUS_FINISHED;
+                    },
+                ]
             ],
         ],
     ]); ?>
