@@ -49,6 +49,21 @@ use common\models\db\Incident;
             'anamnesis',
 
             [
+                'attribute' => 'verdictAuthorId',
+                'format' => 'html',
+                'value' => static function (Incident $model) {
+                    if (!empty($model->verdictAuthorId)) {
+                        $author = $model->verdictAuthor;
+                        $text = $author->name . ' ' . $author->lastname . ' ' . $author->surname;
+                        return Html::a($text, ['user/view', 'id' => $model->verdictAuthorId]);
+                    }
+
+                    return null;
+                },
+                'visible' => $model->status == Incident::STATUS_FINISHED
+            ],
+
+            [
                 'attribute' => 'verdict',
                 'visible' => $model->status == Incident::STATUS_FINISHED
             ],

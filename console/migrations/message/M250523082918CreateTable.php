@@ -17,7 +17,6 @@ class M250523082918CreateTable extends Migration
             'userId' => $this->integer(),
             'type' => $this->tinyInteger()->notNull(),
             'text' => $this->text(),
-            'fileId' => $this->integer(),
             'createdAt' => $this->bigInteger(),
             'updatedAt' => $this->bigInteger()
         ]);
@@ -39,15 +38,6 @@ class M250523082918CreateTable extends Migration
             'userId',
             'SET NULL'
         );
-
-        $this->addForeignKey(
-            'fk-message-file-1',
-            'message',
-            'fileId',
-            'file',
-            'fileId',
-            'SET NULL'
-        );
     }
 
     /**
@@ -62,11 +52,6 @@ class M250523082918CreateTable extends Migration
 
         $this->dropForeignKey(
             'fk-message-user-1',
-            'message'
-        );
-
-        $this->dropForeignKey(
-            'fk-message-file-1',
             'message'
         );
         

@@ -20,6 +20,7 @@ use Yii;
  * @property string $surname
  *
  * @property AccessToken[] $accessTokens
+ * @property Incident[] $incidents
  * @property Message[] $messages
  */
 class BaseUser extends \common\models\db\base\BaseModel
@@ -70,6 +71,14 @@ class BaseUser extends \common\models\db\base\BaseModel
     public function getAccessTokens()
     {
         return $this->hasMany(AccessToken::className(), ['userId' => 'userId']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getIncidents()
+    {
+        return $this->hasMany(Incident::className(), ['verdictAuthorId' => 'userId']);
     }
 
     /**

@@ -11,20 +11,20 @@ use Yii;
  * @property int $status
  * @property string $patientName
  * @property int $birthDate
+ * @property int $sex
  * @property string $policy
  * @property string $snils
  * @property string $address
  * @property string $anamnesis
  * @property int $chatId
- * @property int $fileId
  * @property int $createdAt
  * @property int $updatedAt
  * @property string $verdict
  * @property int $verdictAt
- * @property int $sex
+ * @property int $verdictAuthorId
  *
  * @property Chat $chat
- * @property File $file
+ * @property User $verdictAuthor
  */
 class BaseIncident extends \common\models\db\base\BaseModel
 {
@@ -42,14 +42,14 @@ class BaseIncident extends \common\models\db\base\BaseModel
     public function rules()
     {
         return [
-            [['status', 'birthDate', 'chatId', 'fileId', 'createdAt', 'updatedAt', 'verdictAt', 'sex'], 'integer'],
+            [['status', 'birthDate', 'sex', 'chatId', 'createdAt', 'updatedAt', 'verdictAt', 'verdictAuthorId'], 'integer'],
             [['anamnesis', 'verdict'], 'string'],
             [['patientName', 'address'], 'string', 'max' => 255],
             [['policy'], 'string', 'max' => 16],
             [['snils'], 'string', 'max' => 14],
             [['chatId'], 'unique'],
             [['chatId'], 'exist', 'skipOnError' => true, 'targetClass' => Chat::className(), 'targetAttribute' => ['chatId' => 'chatId']],
-            [['fileId'], 'exist', 'skipOnError' => true, 'targetClass' => File::className(), 'targetAttribute' => ['fileId' => 'fileId']],
+            [['verdictAuthorId'], 'exist', 'skipOnError' => true, 'targetClass' => User::className(), 'targetAttribute' => ['verdictAuthorId' => 'userId']],
         ];
     }
 
@@ -63,17 +63,17 @@ class BaseIncident extends \common\models\db\base\BaseModel
             'status' => 'Status',
             'patientName' => 'Patient Name',
             'birthDate' => 'Birth Date',
+            'sex' => 'Sex',
             'policy' => 'Policy',
             'snils' => 'Snils',
             'address' => 'Address',
             'anamnesis' => 'Anamnesis',
             'chatId' => 'Chat ID',
-            'fileId' => 'File ID',
             'createdAt' => 'Created At',
             'updatedAt' => 'Updated At',
             'verdict' => 'Verdict',
             'verdictAt' => 'Verdict At',
-            'sex' => 'Sex',
+            'verdictAuthorId' => 'Verdict Author ID',
         ];
     }
 
@@ -88,8 +88,8 @@ class BaseIncident extends \common\models\db\base\BaseModel
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getFile()
+    public function getVerdictAuthor()
     {
-        return $this->hasOne(File::className(), ['fileId' => 'fileId']);
+        return $this->hasOne(User::className(), ['userId' => 'verdictAuthorId']);
     }
 }

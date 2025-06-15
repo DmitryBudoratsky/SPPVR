@@ -22,7 +22,6 @@ class M250510191400CreateTable extends Migration
             'address' => $this->string(),
             'anamnesis' => $this->text(),
             'chatId' => $this->integer(),
-            'fileId' => $this->integer(),
             'createdAt' => $this->bigInteger(),
             'updatedAt' => $this->bigInteger()
         ]);
@@ -42,15 +41,6 @@ class M250510191400CreateTable extends Migration
             'chatId',
             true
         );
-
-        $this->addForeignKey(
-            'fk-incident-file-1',
-            'incident',
-            'fileId',
-            'file',
-            'fileId',
-            'SET NULL'
-        );
     }
 
     /**
@@ -65,11 +55,6 @@ class M250510191400CreateTable extends Migration
 
         $this->dropIndex(
             'incident-chatId-unique',
-            'incident'
-        );
-
-        $this->dropForeignKey(
-            'fk-incident-file-1',
             'incident'
         );
 

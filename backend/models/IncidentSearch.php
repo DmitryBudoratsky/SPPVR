@@ -23,7 +23,7 @@ class IncidentSearch extends Incident
     public function rules()
     {
         return [
-            [['incidentId', 'status', 'birthDate', 'chatId', 'fileId', 'createdAt', 'updatedAt'], 'integer'],
+            [['incidentId', 'status', 'birthDate', 'chatId', 'createdAt', 'updatedAt'], 'integer'],
             [['patientName', 'address', 'anamnesis', 'policy', 'snils', 'createdAtRange', 'birthDateRange'], 'string'],
         ];
     }
@@ -78,7 +78,6 @@ class IncidentSearch extends Incident
             'status' => $this->status,
             'birthDate' => $this->birthDate,
             'chatId' => $this->chatId,
-            'fileId' => $this->fileId,
             'createdAt' => $this->createdAt,
             'updatedAt' => $this->updatedAt,
         ]);

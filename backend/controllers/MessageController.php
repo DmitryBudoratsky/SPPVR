@@ -34,7 +34,7 @@ class MessageController extends PrivateController
     {
         $model = new Message(['type' => Message::TYPE_USER, 'userId' => User::getUser()->userId]);
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
+        if ($model->load(Yii::$app->request->post()) && !empty($model->text) && $model->save()) {
             return $this->redirect(\Yii::$app->request->referrer);
         }
 

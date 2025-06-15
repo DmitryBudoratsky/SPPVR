@@ -52,6 +52,7 @@ class Incident extends BaseIncident
         }
 
         if ($this->isAttributeChanged('status') && $this->status == self::STATUS_FINISHED) {
+            $this->verdictAuthorId = User::getUser()->userId;
             $this->verdictAt = time();
         }
 
@@ -91,6 +92,8 @@ class Incident extends BaseIncident
             'snils' => 'Снилс',
             'address' => 'Адрес',
             'anamnesis' => 'Анамнез',
+            'verdictAuthorId' => 'Автор вердикта',
+            'verdictAuthor' => 'Автор вердикта',
             'verdict' => 'Вердикт',
             'verdictAt' => 'Дата и время вердикта',
             'chatId' => 'Chat ID',
@@ -115,6 +118,8 @@ class Incident extends BaseIncident
      */
     public function serialize(): array
     {
+        $author = $this->verdictAuthor;
+
         return [
             'name' => "Случай №$this->incidentId",
             'incidentId' => $this->incidentId,
@@ -126,6 +131,7 @@ class Incident extends BaseIncident
             'snils' => $this->snils,
             'address' => $this->address,
             'anamnesis' => $this->anamnesis,
+            'verdictAuthor' => $author->name . ' ' . $author->lastname . ' ' . $author->surname,
             'verdict' => $this->verdict,
             'verdictAt' => \Yii::$app->formatter->asDate($this->verdictAt, 'php:d.m.Y H:i'),
             'createdAt' => \Yii::$app->formatter->asDate($this->createdAt, 'php:d.m.Y H:i'),
