@@ -12,12 +12,10 @@ use Yii;
  * @property int $userId
  * @property int $type
  * @property string $text
- * @property int $fileId
  * @property int $createdAt
  * @property int $updatedAt
  *
  * @property Chat $chat
- * @property File $file
  * @property User $user
  */
 class BaseMessage extends \common\models\db\base\BaseModel
@@ -37,10 +35,9 @@ class BaseMessage extends \common\models\db\base\BaseModel
     {
         return [
             [['chatId', 'type'], 'required'],
-            [['chatId', 'userId', 'type', 'fileId', 'createdAt', 'updatedAt'], 'integer'],
+            [['chatId', 'userId', 'type', 'createdAt', 'updatedAt'], 'integer'],
             [['text'], 'string'],
             [['chatId'], 'exist', 'skipOnError' => true, 'targetClass' => Chat::className(), 'targetAttribute' => ['chatId' => 'chatId']],
-            [['fileId'], 'exist', 'skipOnError' => true, 'targetClass' => File::className(), 'targetAttribute' => ['fileId' => 'fileId']],
             [['userId'], 'exist', 'skipOnError' => true, 'targetClass' => User::className(), 'targetAttribute' => ['userId' => 'userId']],
         ];
     }
@@ -56,7 +53,6 @@ class BaseMessage extends \common\models\db\base\BaseModel
             'userId' => 'User ID',
             'type' => 'Type',
             'text' => 'Text',
-            'fileId' => 'File ID',
             'createdAt' => 'Created At',
             'updatedAt' => 'Updated At',
         ];
@@ -68,14 +64,6 @@ class BaseMessage extends \common\models\db\base\BaseModel
     public function getChat()
     {
         return $this->hasOne(Chat::className(), ['chatId' => 'chatId']);
-    }
-
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getFile()
-    {
-        return $this->hasOne(File::className(), ['fileId' => 'fileId']);
     }
 
     /**

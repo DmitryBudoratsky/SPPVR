@@ -8,6 +8,7 @@ use kartik\widgets\FileInput;
 use yii\bootstrap4\ActiveForm;
 use yii\data\ActiveDataProvider;
 use yii\helpers\Html;
+use yii\helpers\Markdown;
 use yii\helpers\Url;
 use yii\widgets\Pjax;
 
@@ -80,7 +81,7 @@ $messagePage = is_null(\Yii::$app->request->get('page'))
                             'format' => 'raw',
                             'options' => ['class' => 'col-sm-8'],
                             'value' => static function (/** @var Message $model */ $model) {
-                                $result = $model->text;
+                                $result = Markdown::process($model->text);
 
                                 if (!empty($model->text) && !empty($model->fileId)) {
                                     $result .= '<hr>';

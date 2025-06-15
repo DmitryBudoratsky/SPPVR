@@ -12,6 +12,8 @@ class Message extends BaseMessage
 
     const AI_NAME = 'Нейро';
 
+    public $file;
+
     /**
      * {@inheritdoc}
      */
